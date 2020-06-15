@@ -193,7 +193,7 @@ while true
                 printTable = true;
             else
                 IntegerCols = {'BlAFID'};
-                WriteFASTTable(line, fidIN, fidOUT, FastPar.BldNodes, FastPar.BldNodesHdr, newline, 1, IntegerCols);
+                WriteFASTTable(line, fidIN, fidOUT, num2cell(FastPar.BldNodes), FastPar.BldNodesHdr, newline, 1, IntegerCols);
                 continue; %let's continue reading the template file            
             end   
             
