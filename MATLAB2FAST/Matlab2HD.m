@@ -24,7 +24,7 @@ end
 
 HaveNewLineChar = false;
 % newline = '\r'; %mac
-% newline = '\n'; %linux
+newline = '\n'; %linux
 % newline = '\r\n'; %windows
 ContainsOutList = false;
 
@@ -247,7 +247,7 @@ if ContainsOutList
         spaces      = repmat(' ',1,max(1,26-size(OutListChar,2)));
         %Now add the Outlist
         for io = 1:length(HDPar.OutList)
-            fprintf(fidOUT,'%s',[OutListChar(io,:) spaces HDPar.OutListComments{io} newline]);
+            fprintf(fidOUT,'%s\n',[OutListChar(io,:) spaces HDPar.OutListComments{io}]);
         end
         fprintf(fidOUT,'END of output channels and end of file. (the word "END" must appear in the first 3 columns of this line)');
         fprintf(fidOUT,newline);
