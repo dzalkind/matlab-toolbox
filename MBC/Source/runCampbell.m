@@ -5,23 +5,23 @@
 %--------------------------------------------------------------------------
 
 %% let's get the directory that contains the template files
-templateDir = [ '..\..\ConvertFASTversions\TemplateFiles'];
+templateDir = [ '../../ConvertFASTversions/TemplateFiles'];
 
-IfWtemplate  = [templateDir filesep 'InflowWind.dat'];
-SrvDtemplate = [templateDir filesep 'ServoDyn.dat'];
-EDtemplate   = [templateDir filesep 'ElastoDyn.dat']; 
-FASTtemplate = [templateDir filesep 'OpenFAST.dat']; 
+IfWtemplate  = [templateDir filesep 'IfW_v3.01.x.dat'];
+SrvDtemplate = [templateDir filesep 'SrvD_Primary_v1.05.x.dat'];
+EDtemplate   = [templateDir filesep 'ED_Primary_v1.03.x.dat']; 
+FASTtemplate = [templateDir filesep 'FAST_Primary_v8.17.x.dat']; 
 
 VizTemplate = [templateDir filesep 'OpenFAST-Modes.viz'];
 WriteVTKmodes = true;
 WriteFASTfiles = true;
 
 WriteVTKmodes = false;
-WriteFASTfiles = false;
+WriteFASTfiles = true;
 
 %% Executable and base file:       
-FASTexe = '..\..\bin\openFAST_Win32.exe';
-FSTName = 'OpenFAST.fst';
+FASTexe = 'openfast';
+FSTName = '/Users/dzalkind/Tools/ROSCO_toolbox/Test_Cases/5MW_Land_DLL_WTurb/5MW_Land_DLL_WTurb.fst';
 
 VizFile = 'OpenFAST-Modes.viz';
 %----------------------------------------------------------------------
@@ -74,8 +74,10 @@ RotSpeedAry = [6.972, 7.183, 7.506, 7.942, 8.469, 9.156, 10.296, 11.431, 11.89, 
 BldPitch1   = [0, 0, 0, 0, 0, 0, 0, 0, 0, 3.823, 6.602, 8.668, 10.45, 12.055, 13.536, 14.92, 16.226, 17.473, 18.699, 19.941, 21.177, 22.347, 23.469]; % (deg)
 GenTqAry    = [0.606, 2.58, 5.611, 9.686, 14.62, 20.174, 25.51, 31.455, 40.014, 43.094, 43.094, 43.094, 43.094, 43.094, 43.094, 43.094, 43.094, 43.094, 43.094, 43.094, 43.094, 43.094, 43.094]*1000; %(N-m)
 
-SimTime   = 5600; % time in seconds that the first linearization output will happen (maximum time to converge to steady-state solution)
-RatedWindSpeed = 11.4;
+SimTime         = 2000; % time in seconds that the first linearization output will happen (maximum time to converge to steady-state solution)
+RatedWindSpeed  = 11.4;
+RotPeriod       = 60./RotSpeedAry;
+
 
 %%
 nPoints = max( length(RotSpeedAry), length(WindSpeedAry) );
@@ -84,6 +86,12 @@ FAST_linData = cell(nPoints,1); % raw data read from FAST's .lin files
 getMatData   = cell(nPoints,1); % FAST .lin data converted to format that MBC can process
 MBC_data     = cell(nPoints,1); % processed MBC3 data
 CampbellData = cell(nPoints,1);
+LinTimes     = cell(nPoints,1);
+
+
+for iWS = 1:nPoints
+    LinTimes{iWS}   = (SimTime - 100):RotPeriod(iWS)/NLinTimes:(SimTime - 100 + RotPeriod(iWS) - RotPeriod(iWS)/NLinTimes);
+end
 
 %%
 for i_case = nPoints:-1:1
@@ -148,6 +156,10 @@ for i_case = nPoints:-1:1
         FP_mod = SetFASTPar(FP_mod,'Linearize','true');
         FP_mod = SetFASTPar(FP_mod,'CalcSteady','true');
         FP_mod = SetFASTPar(FP_mod,'NLinTimes',NLinTimes);
+
+        FP_mod = SetFASTPar(FP_mod,'LinTimes',num2str((SimTime - 100): ...
+            RotPeriod(i_case)/NLinTimes: ...
+            (SimTime - 100 + RotPeriod(i_case) - RotPeriod(i_case)/NLinTimes)));        
         FP_mod = SetFASTPar(FP_mod,'TrimCase', TrimCase);
         FP_mod = SetFASTPar(FP_mod,'TrimGain', TrimGain); 
         FP_mod = SetFASTPar(FP_mod,'TrimTol', 1e-3);
@@ -179,7 +191,7 @@ for i_case = nPoints:-1:1
         system( [FASTexe ' -VTKLin ' VizFile]);
         system(['copy fort.51 ' strrep( newFSTName, '.fst','.viz.51' )]);
     else
-        [MBC_data{i_case}, getMatData{i_case}, FAST_linData{i_case}] = fx_mbc3( FileNames ); 
+        [MBC_data{i_case}, getMatData{i_case}, FAST_linData{i_case}] = fx_mMBbc3( FileNames ); 
     end
     [CampbellData{i_case}] = campbell_diagram_data(MBC_data{i_case}, BladeLen, TowerLen, [], strrep(newFSTName,'.fst','.MBD.sum'));       
     
