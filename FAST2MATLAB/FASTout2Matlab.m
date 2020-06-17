@@ -101,4 +101,4 @@ if POST_PROCESS
 end
 
 
-cearvars POST_PROCESS
+clearvars POST_PROCESS

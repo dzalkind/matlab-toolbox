@@ -1,5 +1,8 @@
 ./ProgrammingTools/*.f90
 *.asv
 *.zip
+*.autosave
+*.DS_Store
+slprj/
 yamlmatlab
 *~
