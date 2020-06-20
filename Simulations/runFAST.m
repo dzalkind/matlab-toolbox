@@ -5,7 +5,7 @@
 clear;
 
 
-fast.FAST_exe          = '/Users/dzalkind/Tools/openfast/install/bin/openfast';
+fast.FAST_exe          = '/Users/dzalkind/Tools/openfast/install-old/bin/openfast';
 fast.FAST_SFuncDir     = '/Users/dzalkind/Tools/openfast-sim/glue-codes/simulink/src';  %%%% NEED FOR SIMULINK
 fast.FAST_InputFile    = 'UM_DLC0_100.fst';   % FAST input file (ext=.fst)
 fast.FAST_directory    = '/Users/dzalkind/Tools/WISDEM/UMaine/DLCs';   % Path to fst directory files
@@ -18,9 +18,10 @@ simu.ParamScript        = '/Users/dzalkind/Tools/matlab-tools/Simulations/Simuli
 simu.DebugSim           = 1;  % use when running/testing/editing main file
 
 if 1 % give a specific name
-    fast.FAST_namingOut = 'case100_sim';
+    fast.FAST_namingOut = 'case100_fullSim';
 else
     % give a datestr name
+    fast.FAST_namingOut = datestr(now,'mmddyy_HHMMSS');
 end
 
 %% Edits
@@ -34,7 +35,7 @@ end
 
 
 edits.FA = {
-    'TMax',      100;
+    'TMax',      600;
     };
 
 edits.ED = {

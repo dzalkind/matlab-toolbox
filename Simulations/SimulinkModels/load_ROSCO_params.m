@@ -98,18 +98,90 @@ Cx                  = Pre_LoadRotPerf(fullfile(fast.FAST_runDirectory,F.Out.Cx))
 R.WE_v0             = 12;
 R.WE_om0            = GetFASTPar(P.EDP,'RotSpeed') * R.WE_GearboxRatio;
 
-% %% Load CpSurface 
-% % cpscan = load('/Users/nabbas/Documents/TurbineModels/DTU_10MW/DTU10MWRWT/CpScan/CpScan.mat');
-% 
-% 
-% TSRvec = cpscan.TSR;
-% zind = find(cpscan.BlPitch == 0);
-% Cpvec = cpscan.Cpmat(:,zind)';
-% TSR_opt = TSRvec(Cpvec == max(Cpvec));
+
+%% Floating Platform Damper
+
+% Enable
+R.Fl_Mode           = GetFASTPar(P.SD_dllP,'Fl_Mode');
+
+% Filters
+R.F_FlCornerFreq    = GetFASTPar(P.SD_dllP,'F_FlCornerFreq');
+F_Fl_LPF            = Af_LPF(R.F_FlCornerFreq(1),R.F_FlCornerFreq(2),simu.dt);
+F.F_Fl.b            = F_Fl_LPF.num{1};
+F.F_Fl.a            = F_Fl_LPF.den{1};
+
+% Optional Notch
+F.F_NotchType       = GetFASTPar(P.SD_dllP,'F_NotchType');
+
+if F.F_NotchType == 2
+    
+    F.F_NotchCornerFreq     = GetFASTPar(P.SD_dllP,'F_NotchCornerFreq');
+    F.F_NotchBetaNumDen     = GetFASTPar(P.SD_dllP,'F_NotchBetaNumDen');
+       
+    F_Fl_Notch  = Af_MovingNotch(F.F_NotchCornerFreq,F.F_NotchBetaNumDen(2),F.F_NotchBetaNumDen(1),simu.dt);
+    
+    F.F_Fl_Notch.b          = F_Fl_Notch.num{1};
+    F.F_Fl_Notch.a          = F_Fl_Notch.den{1};
+        
+else
+    F.F_Fl_Notch.b          = 1;
+    F.F_Fl_Nothc.a          = 1;
+end
+
+% Gain
+R.Fl_Kp             = GetFASTPar(P.SD_dllP,'Fl_Kp');
+
+if 0
+    
+    CornerFreq = R.F_FlCornerFreq(1)
+    Damp       = R.F_FlCornerFreq(2)
+    
+            a2 = simu.dt^2.0*CornerFreq^2.0 + 4.0 + 4.0*Damp*CornerFreq*simu.dt;
+            a1 = 2.0*simu.dt^2.0*CornerFreq^2.0 - 8.0;
+            a0 = simu.dt^2.0*CornerFreq^2.0 + 4.0 - 4.0*Damp*CornerFreq*simu.dt;
+            b2 = simu.dt^2.0*CornerFreq^2.0;
+            b1 = 2.0*simu.dt^2.0*CornerFreq^2.0;
+            b0 = simu.dt^2.0*CornerFreq^2.0;
+            
+    aa = [a2,a1,a0]/a2;
+    bb = [b2,b1,b0]/a2;
+    
+    figure(900)
+    set(gcf,'Name','Fl Filts');
+    bode(F_Fl_LPF,tf(bb,aa,simu.dt))
+
+            
+end
 
 
-% % Betavec = cpscan.BlPitch(zind:end);
-% % Cpmat = cpscan.Cpmat(:,zind:end);
+%% Min Pitch Saturation
+
+% Peak shaving if PS_Mode == 1
+R.PS_Mode           = GetFASTPar(P.SD_dllP,'PS_Mode');
+
+% Peak shaving lookup table
+R.PS_WindSpeeds     = GetFASTPar(P.SD_dllP,'PS_WindSpeeds');
+R.PS_BldPitchMin    = GetFASTPar(P.SD_dllP,'PS_BldPitchMin');
+
+% Filter (hard coded)
+F_PS                = Af_LPF(0.2,1,simu.dt,1);
+F.F_PS.a            = F_PS.den{1};
+F.F_PS.b            = F_PS.num{1};
+
+if 1
+    figure(1000);
+    set(gcf,'Name','MP Table');
+    
+    subplot(211);
+    plot(R.PS_WindSpeeds,R.PS_BldPitchMin);
+    
+    subplot(212);
+    bodemag(F_PS);
+    ylim([-50,2]);
+    
+end
+
+
 
 %% Find plant parameters
 
