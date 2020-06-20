@@ -3,6 +3,8 @@
 *.zip
 *.autosave
 *.DS_Store
+*.slcx
+*.6
 slprj/
 yamlmatlab
 *~
