@@ -30,7 +30,6 @@ R.VS_MinOMSpd   = GetFASTPar(P.SD_dllP,'VS_MinOMSpd');  % Minimum rotor speed
 R.VS_TSRopt     = GetFASTPar(P.SD_dllP,'VS_TSRopt');  % Minimum rotor speed
 
 R.VS_KP         = GetFASTPar(P.SD_dllP,'VS_KP');        % PI gain schedule
-R.VS_KP         = GetFASTPar(P.SD_dllP,'VS_KP');        % PI gain schedule
 R.VS_KI         = GetFASTPar(P.SD_dllP,'VS_KI');
 
 R.VS_MaxTq      = GetFASTPar(P.SD_dllP,'VS_MaxTq');      % max torque
