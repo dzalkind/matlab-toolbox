@@ -125,6 +125,7 @@ end
 
 %% Exectute FAST
 
+% Using Simulink/S_Func
 if simu.Use_Simulink
 
     
@@ -132,34 +133,42 @@ if simu.Use_Simulink
     TMax               = simu.TMax;
     
     
-    
-    if 1
+    if simu.DebugSim
         SimulinkModel = simu.SimModel;
-    else
+    else %run local, copied file
         SimulinkModel = [fast.FAST_runDirectory, filesep, fast.FAST_namingOut];
     end
     
     Out         = sim(SimulinkModel, 'StopTime',num2str(GetFASTPar(P.FP,'TMax')));
-    sigsOut     = get(Out,'sigsOut');
+    sigsOut     = get(Out,'sigsOut');   %internal control signals
     
-else
+else  % Run dll/Fast executable
     system([fast.FAST_exe, ' ', fast.FAST_runDirectory, filesep, fast.FAST_namingOut,'.fst']);
     
     % rename ROSCO debug file
     movefile('DEBUG.dbg',fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'.RO.out']));
 end
 
+%% Get Out Data
+
+if simu.Use_Simulink
+    SFuncOutStr = '.SFunc';
+else
+    SFuncOutStr = '';
+end
+
+[OutData,OutList] = ReadFASTtext([fast.FAST_runDirectory,filesep,fast.FAST_namingOut,SFuncOutStr,'.out']);
 
 
 %% Post Process
 
 post.Scripts = {
-    'A4_8_SetPlotChannels';
+    'post_SetPlotChannels';
     'Signals = ROSCOout2Matlab(fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,''.RO.out'']));'
-    'A4_GetSimSignals';
-    'A4_8_Plot_Channels';
-    'A4_8_Plot_Signals';
-    'A4_8_SaveLite';
+    'post_GetSimSignals';
+    'post_PlotChannels';
+    'post_PlotSignals';
+    'post_SaveData';
     };
 
 % Plot
@@ -168,14 +177,6 @@ post.Scripts = {
 % Channels = {'Wind1VelX','GenTq','BldPitch1','GenPwr','GenSpeed','RootMyb1','TwrBsMyt','PtfmPitch'};
 % outdata = PlotFASToutput([fast.FAST_runDirectory,filesep,fast.FAST_namingOut,'.out'],{'test'},1,Channels);
 
-% Get Out Data
-if simu.Use_Simulink
-    SFuncOutStr = '.SFunc';
-else
-    SFuncOutStr = '';
-end
-
-[OutData,OutList] = ReadFASTtext([fast.FAST_runDirectory,filesep,fast.FAST_namingOut,SFuncOutStr,'.out']);
 
 PLOT = 1;
 
