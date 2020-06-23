@@ -4,20 +4,41 @@
 
 clear;
 
+simu.Configuration    = 1;
 
-fast.FAST_exe          = '/Users/dzalkind/Tools/openfast/install-old/bin/openfast';
-fast.FAST_SFuncDir     = '/Users/dzalkind/Tools/openfast-sim/glue-codes/simulink/src';  %%%% NEED FOR SIMULINK
-fast.FAST_InputFile    = 'UM_DLC0_100.fst';   % FAST input file (ext=.fst)
-fast.FAST_directory    = '/Users/dzalkind/Tools/WISDEM/UMaine/DLCs';   % Path to fst directory files
-fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData';
 
-% Simulation Parameters
-simu.Use_Simulink       = 1;
-simu.SimModel           = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SimulinkModels/ROSCO';
-simu.ParamScript        = '/Users/dzalkind/Tools/matlab-tools/Simulations/SimulinkModels/load_ROSCO_params';
-simu.DebugSim           = 1;  % use when running/testing/editing main file
+switch simu.Configuration
+    
+    case 1 
+        % IEA 15 MW with ROSCO
+        
+        fast.FAST_exe          = '/Users/dzalkind/Tools/openfast/install-old/bin/openfast';
+        fast.FAST_SFuncDir     = '/Users/dzalkind/Tools/openfast-sim/glue-codes/simulink/src';  %%%% NEED FOR SIMULINK
+        fast.FAST_InputFile    = 'UM_DLC0_100.fst';   % FAST input file (ext=.fst)
+        fast.FAST_directory    = '/Users/dzalkind/Tools/WISDEM/UMaine/DLCs';   % Path to fst directory files
+        fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData';
+        
+        % Simulation Parameters
+        simu.Use_Simulink       = 0;
+        simu.SimModel           = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SimulinkModels/ROSCO';
+        simu.ParamScript        = '/Users/dzalkind/Tools/matlab-tools/Simulations/SimulinkModels/load_ROSCO_params';
+        simu.DebugSim           = 1;  % use when running/testing/editing main file
+        
+        
+    case 2
+        % NASA Floater with ROSCO
+        
+        fast.FAST_exe          = '/Users/dzalkind/Tools/openfast/install-old/bin/openfast';
+        fast.FAST_SFuncDir     = '/Users/dzalkind/Tools/openfast-sim/glue-codes/simulink/src';  %%%% NEED FOR SIMULINK
+        fast.FAST_InputFile    = 'UM_DLC0_100.fst';   % FAST input file (ext=.fst)
+        fast.FAST_directory    = '/Users/dzalkind/Tools/WISDEM/UMaine/DLCs';   % Path to fst directory files
+        fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData';
+        
+        % Simulation Parameters
+        simu.Use_Simulink       = 0;
+end
 
-if 1 % give a specific name
+if 0 % give a specific name
     fast.FAST_namingOut = 'case100_fullSim';
 else
     % give a datestr name
@@ -35,7 +56,7 @@ end
 
 
 edits.FA = {
-    'TMax',      600;
+    'TMax',      100;
     };
 
 edits.ED = {

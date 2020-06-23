@@ -6,7 +6,7 @@ Model {
     NumRootInports	    0
     NumRootOutports	    0
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.1682"
+    ComputedModelVersion    "1.1683"
     NumModelReferences	    0
     NumTestPointedSignals   12
     TestPointedSignal {
@@ -165,7 +165,7 @@ Model {
       $ObjectID		      2
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [1920.0, 23.0, 1792.0, 1097.0]
+      Location		      [0.0, 23.0, 1920.0, 977.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		3
@@ -192,21 +192,21 @@ Model {
 	  IsTabbed		  [1]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "376"
-	  Extents		  [1754.0, 868.0]
-	  ZoomFactor		  [0.6]
-	  Offset		  [-931.12299210602532, -191.75240923136357]
-	  SceneRectInView	  [-931.12299210602532, -191.75240923136357, 2923.3333333333335, 1446.6666666666667]
+	  Extents		  [1882.0, 748.0]
+	  ZoomFactor		  [0.97693351424694708]
+	  Offset		  [-308.35086805555557, 25.669444444444423]
+	  SceneRectInView	  [-308.35086805555557, 25.669444444444423, 1926.4361111111111, 765.66111111111115]
 	}
 	Object {
 	  $ObjectID		  6
-	  IsActive		  [0]
+	  IsActive		  [1]
 	  IsTabbed		  [1]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "627"
-	  Extents		  [1754.0, 868.0]
-	  ZoomFactor		  [1.0]
-	  Offset		  [-499.56015625000009, -140.48333333333323]
-	  SceneRectInView	  [-499.56015625000009, -140.48333333333323, 1754.0, 868.0]
+	  Extents		  [1882.0, 748.0]
+	  ZoomFactor		  [1.2299401530967293]
+	  Offset		  [-366.52329265643107, -163.57983596465817]
+	  SceneRectInView	  [-366.52329265643107, -163.57983596465817, 1530.1557521002317, 608.15967192931635]
 	}
 	Object {
 	  $ObjectID		  7
@@ -214,14 +214,14 @@ Model {
 	  IsTabbed		  [1]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "20"
-	  Extents		  [1754.0, 868.0]
+	  Extents		  [1882.0, 748.0]
 	  ZoomFactor		  [1.0]
-	  Offset		  [-329.5296875, 29.633333333333326]
-	  SceneRectInView	  [-329.5296875, 29.633333333333326, 1754.0, 868.0]
+	  Offset		  [-501.4671875, 21.090277777777771]
+	  SceneRectInView	  [-501.4671875, 21.090277777777771, 1882.0, 748.0]
 	}
 	Object {
 	  $ObjectID		  8
-	  IsActive		  [1]
+	  IsActive		  [0]
 	  IsTabbed		  [1]
 	  ViewObjType		  "SimulinkSubsys"
 	  LoadSaveID		  "766"
@@ -268,22 +268,22 @@ Model {
 	  IsActive		  [0]
 	  IsTabbed		  [1]
 	  ViewObjType		  "SimulinkSubsys"
-	  LoadSaveID		  "215"
-	  Extents		  [1754.0, 868.0]
-	  ZoomFactor		  [1.25]
-	  Offset		  [-189.9101901167636, -14.402774190772391]
-	  SceneRectInView	  [-189.9101901167636, -14.402774190772391, 1403.2, 694.4]
+	  LoadSaveID		  "659"
+	  Extents		  [1754.0, 748.0]
+	  ZoomFactor		  [0.6]
+	  Offset		  [-770.61201666188981, -997.36468314537615]
+	  SceneRectInView	  [-770.61201666188981, -997.36468314537615, 2923.3333333333335, 1246.6666666666667]
 	}
 	Object {
 	  $ObjectID		  13
 	  IsActive		  [0]
 	  IsTabbed		  [0]
 	  ViewObjType		  "SimulinkSubsys"
-	  LoadSaveID		  "659"
+	  LoadSaveID		  "215"
 	  Extents		  [1754.0, 868.0]
 	  ZoomFactor		  [0.6]
-	  Offset		  [-770.61201666188981, -997.36468314537615]
-	  SceneRectInView	  [-770.61201666188981, -997.36468314537615, 2923.3333333333335, 1446.6666666666667]
+	  Offset		  [-684.77685678343028, -169.53610752410566]
+	  SceneRectInView	  [-684.77685678343028, -169.53610752410566, 2923.3333333333335, 1446.6666666666667]
 	}
 	Object {
 	  $ObjectID		  14
@@ -291,10 +291,10 @@ Model {
 	  IsTabbed		  [0]
 	  ViewObjType		  "SimulinkTopLevel"
 	  LoadSaveID		  "0"
-	  Extents		  [1754.0, 868.0]
-	  ZoomFactor		  [1.25]
-	  Offset		  [-891.85778930342281, -77.068746312038343]
-	  SceneRectInView	  [-891.85778930342281, -77.068746312038343, 1403.2, 694.4]
+	  Extents		  [1882.0, 748.0]
+	  ZoomFactor		  [0.93586992708458783]
+	  Offset		  [-942.98273057873519, -141.12818461864765]
+	  SceneRectInView	  [-942.98273057873519, -141.12818461864765, 2010.9632177868848, 799.2563692372953]
 	}
 	Object {
 	  $ObjectID		  15
@@ -407,7 +407,7 @@ Model {
       "AAAAfwAAABGAAAC+AAAAAAA////+gAAAAECAAAAAvsAAABUAEcATABVAEUAMgA6AFAAcgBvAHAAZQByAHQAeQBJAG4AcwBwAGUAYwB0AG8AcgAvA"
       "FAAcgBvAHAAZQByAHQAeQAgAEkAbgBzAHAAZQBjAHQAbwByAAAAAAD/////AAABrAD////7AAAAXgBHAEwAVQBFADIAOgBOAG8AdABlAHMAIABCA"
       "HIAbwB3AHMAZQByACAAQwBvAG0AcABvAG4AZQBuAHQALwBTAHkAcwBEAG8AYwBNAGkAeABlAGQARQBkAGkAdABvAHIAAAAAAP////8AAAAAAAAAA"
-      "AAABwAAAAOhAAAAAQAAAAIAAAABAAAAAvwAAAABAAAAAgAAAAA="
+      "AAAB4AAAAMpAAAAAQAAAAIAAAABAAAAAvwAAAABAAAAAgAAAAA="
       Array {
 	Type			"Cell"
 	Dimension		0
@@ -424,9 +424,9 @@ Model {
   ModifiedByFormat	  "%<Auto>"
   LastModifiedBy	  "dzalkind"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Mon Jun 22 12:38:14 2020"
-  RTWModifiedTimeStamp	  514730293
-  ModelVersionFormat	  "1.%<AutoIncrement:1682>"
+  LastModifiedDate	  "Tue Jun 23 15:52:16 2020"
+  RTWModifiedTimeStamp	  514828130
+  ModelVersionFormat	  "1.%<AutoIncrement:1683>"
   SampleTimeColors	  off
   SampleTimeAnnotations	  off
   LibraryLinkDisplay	  "disabled"
@@ -14497,7 +14497,7 @@ Model {
   }
   System {
     Name		    "ROSCO"
-    Location		    [1920, 23, 3712, 1120]
+    Location		    [0, 23, 1920, 1000]
     Open		    off
     PortBlocksUseCompactNotation off
     SetExecutionDomain	    off
@@ -14512,7 +14512,7 @@ Model {
     TiledPaperMargins	    [0.500000, 0.500000, 0.500000, 0.500000]
     TiledPageScale	    1
     ShowPageBoundaries	    off
-    ZoomFactor		    "125"
+    ZoomFactor		    "94"
     ReportName		    "simulink-default.rpt"
     SIDHighWatermark	    "787"
     SimulinkSubDomain	    "Simulink"
@@ -14527,7 +14527,7 @@ Model {
       RequestExecContextInheritance off
       System {
 	Name			"BldPitch Controller"
-	Location		[1920, 23, 3712, 1120]
+	Location		[0, 23, 1920, 1000]
 	Open			on
 	PortBlocksUseCompactNotation off
 	SetExecutionDomain	off
@@ -14542,7 +14542,7 @@ Model {
 	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
 	TiledPageScale		1
 	ShowPageBoundaries	off
-	ZoomFactor		"60"
+	ZoomFactor		"98"
 	SimulinkSubDomain	"Simulink"
 	Block {
 	  BlockType		  Inport
@@ -15601,7 +15601,7 @@ Model {
       }
       System {
 	Name			"Extract Signals"
-	Location		[1920, 23, 3712, 1120]
+	Location		[0, 23, 1920, 1000]
 	Open			on
 	PortBlocksUseCompactNotation off
 	SetExecutionDomain	off
@@ -16465,7 +16465,7 @@ Model {
 	      "098039215686 0.623529411764706 1;1 0.411764705882353 0.16078431372549;0.392156862745098 0.831372549019608 0.074"
 	      "5098039215686;0.717647058823529 0.274509803921569 1;0.0588235294117647 1 1;1 0.0745098039215686 0.6509803921568"
 	      "63],'Title','%<SignalLabel>'),'DisplayContentCache',[]),extmgr.Configuration('Tools','Plot Navigation',true),ex"
-	      "tmgr.Configuration('Tools','Measurements',true,'Version','2020a')),'Version','2020a','Position',[1 1 961 761],'"
+	      "tmgr.Configuration('Tools','Measurements',true,'Version','2020a')),'Version','2020a','Position',[1 1 666 761],'"
 	      "VisibleAtModelOpen','on')"
 	      NumInputPorts	      "2"
 	      Floating		      off
@@ -17041,7 +17041,7 @@ Model {
 	  "623529411764706 1;1 0.411764705882353 0.16078431372549;1 1 0.0666666666666667;0.717647058823529 0.274509803921569 1"
 	  ";0.392156862745098 0.831372549019608 0.0745098039215686;0.0588235294117647 1 1;1 0.0745098039215686 0.6509803921568"
 	  "63]),'DisplayLayoutDimensions',[3 1]),extmgr.Configuration('Tools','Plot Navigation',true),extmgr.Configuration('To"
-	  "ols','Measurements',true,'Version','2020a')),'Version','2020a','Position',[1 1 961 761],'VisibleAtModelOpen','on')"
+	  "ols','Measurements',true,'Version','2020a')),'Version','2020a','Position',[1 1 666 761],'VisibleAtModelOpen','on')"
 	  NumInputPorts		  "3"
 	  Floating		  off
 	}
@@ -17413,7 +17413,7 @@ Model {
       ContentPreviewEnabled   on
       System {
 	Name			"SetpointSmoother"
-	Location		[1920, 23, 3712, 1120]
+	Location		[0, 23, 1920, 1000]
 	Open			on
 	PortBlocksUseCompactNotation off
 	SetExecutionDomain	off
@@ -17428,7 +17428,7 @@ Model {
 	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
 	TiledPageScale		1
 	ShowPageBoundaries	off
-	ZoomFactor		"100"
+	ZoomFactor		"123"
 	SimulinkSubDomain	"Simulink"
 	Block {
 	  BlockType		  Inport
@@ -17887,7 +17887,7 @@ Model {
       System {
 	Name			"Torque Controller"
 	Location		[1920, 23, 3712, 1120]
-	Open			on
+	Open			off
 	PortBlocksUseCompactNotation off
 	SetExecutionDomain	off
 	ExecutionDomainType	"Deduce"
@@ -17901,7 +17901,7 @@ Model {
 	TiledPaperMargins	[0.500000, 0.500000, 0.500000, 0.500000]
 	TiledPageScale		1
 	ShowPageBoundaries	off
-	ZoomFactor		"125"
+	ZoomFactor		"60"
 	SimulinkSubDomain	"Simulink"
 	Block {
 	  BlockType		  Inport
@@ -19252,7 +19252,7 @@ Model {
       "1;1 0.411764705882353 0.16078431372549;1 1 0.0666666666666667;0.717647058823529 0.274509803921569 1;0.3921568627"
       "45098 0.831372549019608 0.0745098039215686;0.0588235294117647 1 1;1 0.0745098039215686 0.650980392156863])),extm"
       "gr.Configuration('Tools','Plot Navigation',true),extmgr.Configuration('Tools','Measurements',true,'Version','202"
-      "0a')),'Version','2020a','Position',[1 1 961 761],'VisibleAtModelOpen','on')"
+      "0a')),'Version','2020a','Position',[1 1 666 761],'VisibleAtModelOpen','on')"
       NumInputPorts	      "2"
       Floating		      off
     }
@@ -19273,8 +19273,8 @@ Model {
       }
       System {
 	Name			"Wind Speed Estimator"
-	Location		[1920, 23, 3712, 1120]
-	Open			off
+	Location		[258, 23, 2050, 1000]
+	Open			on
 	PortBlocksUseCompactNotation off
 	SetExecutionDomain	off
 	ExecutionDomainType	"Deduce"
@@ -20058,7 +20058,7 @@ Model {
 	  "15686 0.623529411764706 1;1 0.411764705882353 0.16078431372549;1 1 0.0666666666666667;0.717647058823529 0.274509803"
 	  "921569 1;0.392156862745098 0.831372549019608 0.0745098039215686;0.0588235294117647 1 1;1 0.0745098039215686 0.65098"
 	  "0392156863]),'DisplayLayoutDimensions',[3 1],'DisplayContentCache',[]),extmgr.Configuration('Tools','Plot Navigatio"
-	  "n',true),extmgr.Configuration('Tools','Measurements',true,'Version','2020a')),'Version','2020a','Position',[1 1 961"
+	  "n',true),extmgr.Configuration('Tools','Measurements',true,'Version','2020a')),'Version','2020a','Position',[1 1 666"
 	  " 761],'VisibleAtModelOpen','on')"
 	  NumInputPorts		  "3"
 	  Floating		  off
@@ -20653,6 +20653,9 @@ Stateflow {
     screen		    [1 1 3600 1200 1.180555555555556]
     treeNode		    [0 3 0 0]
     viewObj		    2
+    visible		    1
+    subviewS {
+    }
     ssIdHighWaterMark	    21
     decomposition	    CLUSTER_CHART
     type		    EML_CHART

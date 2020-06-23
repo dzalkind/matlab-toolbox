@@ -12,9 +12,8 @@ POST_PROCESS = 1;
 
 %% Input Processing
 
-fast.FAST_InputFile    = 'UM_DLC0_100';   % FAST input file (no ext)
-fast.FAST_directory    = '/Users/dzalkind/Tools/WISDEM/UMaine/DLCs';   % Path to fst directory files
-
+fast.FAST_InputFile    = 'NASA_Float';   % FAST input file (no ext)
+fast.FAST_directory    = '/Users/dzalkind/Projects/NASA/OpenFAST_Model';   % Path to fst directory files
 
 
 %% Read
@@ -75,13 +74,25 @@ P.SD_dllP   = SD_dllP;
 clearvars FP EDP IWP ADP HDP SvDP ED_BldP ED_TwrP AD_BldP SD_dllP
 
 
+%% Get OutData
+
+outfiles    = dir(fullfile(fast.FAST_directory,[fast.FAST_InputFile,'.out*']));
+[~,~,ext]   = fileparts(outfiles(1).name);
+
+if strcmp(ext,'.outb')
+    [OutData,OutList] = ReadFASTbinary([fast.FAST_directory,filesep,fast.FAST_InputFile,'.outb']);
+else
+    [OutData,OutList] = ReadFASTtext([fast.FAST_directory,filesep,fast.FAST_InputFile,'.out']);
+end
+
+
 %% Post Process
 if POST_PROCESS
     
     post.Scripts = {
-        'A4_8_SetPlotChannels';
-        'A4_8_Plot_Channels';
-        'A4_8_SaveLite'
+        'post_SetPlotChannels';
+        'post_PlotChannels';
+        'post_SaveData'
         };
     
     % Plot
@@ -90,8 +101,7 @@ if POST_PROCESS
     % Channels = {'Wind1VelX','GenTq','BldPitch1','GenPwr','GenSpeed','RootMyb1','TwrBsMyt','PtfmPitch'};
     % outdata = PlotFASToutput([fast.FAST_runDirectory,filesep,fast.FAST_namingOut,'.out'],{'test'},1,Channels);
     
-    % Get Out Data
-    [OutData,OutList] = ReadFASTtext([fast.FAST_directory,filesep,fast.FAST_InputFile,'.out']);
+
     
     PLOT = 1;
     
