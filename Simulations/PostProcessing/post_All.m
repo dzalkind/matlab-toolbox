@@ -2,12 +2,12 @@
 % Set up and run all the post processing scripts you want
 
 post.Scripts = {
-    'A4_8_SetPlotChannels';
+    'post_SetPlotChannels';
     'Signals = ROSCOout2Matlab(fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,''.RO.out'']));'
-    'A4_GetSimSignals';
-    'A4_8_Plot_Channels';
-    'A4_8_Plot_Signals';
-    'A4_8_SaveLite';
+    'post_GetSimSignals';
+    'post_PlotChannels';
+    'post_PlotSignals';
+    'post_SaveData';
     };
 
 % Plot

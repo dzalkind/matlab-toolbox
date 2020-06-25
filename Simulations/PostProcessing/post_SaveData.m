@@ -17,6 +17,10 @@ if ~exist('R','var')
     R = [];
 end
 
+if ~exist('F','var')
+    F = [];
+end
+
 if ~exist('sigsOut','var')
     sigsOut = [];
 end
