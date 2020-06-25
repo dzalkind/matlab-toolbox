@@ -9,11 +9,6 @@
 %% Simulation and controller setup
 
 
-% Load old files until fully transitioned
-addpath(genpath('/Users/dzalkind/Tools/TurbineControllers/SimulinkControllers/TSR_Tracking/'));        
-ContParam = Pre_ContParam_TSR_DTU10MW;
-
-
 %% Turbine Parameters
 
 R.RotorRad = GetFASTPar(P.EDP,'TipRad');        % Rotor radius
@@ -59,17 +54,16 @@ R.SS_PCGain     = GetFASTPar(P.SD_dllP,'SS_PCGain');
 
 %% Filter Parameters
 
-F_GBFilt        = Af_LPF(ContParam.HSSfilt_omn,1,simu.dt,1);
-F_Wind          = Af_LPF(ContParam.WindSpeedEstfilt_omn,1,simu.dt,1);
 
-F_HSS       = Af_LPF(GetFASTPar(P.SD_dllP,'F_LPFCornerFreq'),GetFASTPar(P.SD_dllP,'F_LPFDamping'),simu.dt);
-F.HSS.b      = F_HSS.num{1};
-F.HSS.a      = F_HSS.den{1};
+F_HSS           = Af_LPF(GetFASTPar(P.SD_dllP,'F_LPFCornerFreq'),GetFASTPar(P.SD_dllP,'F_LPFDamping'),simu.dt);
+F.HSS.b         = F_HSS.num{1};
+F.HSS.a         = F_HSS.den{1};
 
 F_SS            = Af_LPF(GetFASTPar(P.SD_dllP,'F_SSCornerFreq'),1,simu.dt,1);
-F.F_SS.b        = F_GBFilt.num{1};
-F.F_SS.a        = F_GBFilt.den{1};
+F.F_SS.b        = F_SS.num{1};
+F.F_SS.a        = F_SS.den{1};
 
+F_Wind          = Af_LPF(0.0333,1,simu.dt,1);
 Filt.Wind.b     = F_Wind.num{1};
 Filt.Wind.a     = F_Wind.den{1};
 
@@ -105,7 +99,7 @@ R.Fl_Mode           = GetFASTPar(P.SD_dllP,'Fl_Mode');
 
 % Filters
 R.F_FlCornerFreq    = GetFASTPar(P.SD_dllP,'F_FlCornerFreq');
-F_Fl_LPF            = Af_LPF(R.F_FlCornerFreq(1),R.F_FlCornerFreq(2),simu.dt);
+F_Fl_LPF            = Af_LPF(R.F_FlCornerFreq(1),R.F_FlCornerFreq(2),simu.dt) * Af_HPF(R.F_FlCornerFreq(1)/20,1,simu.dt,1);
 F.F_Fl.b            = F_Fl_LPF.num{1};
 F.F_Fl.a            = F_Fl_LPF.den{1};
 
@@ -130,24 +124,15 @@ end
 % Gain
 R.Fl_Kp             = GetFASTPar(P.SD_dllP,'Fl_Kp');
 
-if 0
+if 1
     
-    CornerFreq = R.F_FlCornerFreq(1)
-    Damp       = R.F_FlCornerFreq(2)
-    
-            a2 = simu.dt^2.0*CornerFreq^2.0 + 4.0 + 4.0*Damp*CornerFreq*simu.dt;
-            a1 = 2.0*simu.dt^2.0*CornerFreq^2.0 - 8.0;
-            a0 = simu.dt^2.0*CornerFreq^2.0 + 4.0 - 4.0*Damp*CornerFreq*simu.dt;
-            b2 = simu.dt^2.0*CornerFreq^2.0;
-            b1 = 2.0*simu.dt^2.0*CornerFreq^2.0;
-            b0 = simu.dt^2.0*CornerFreq^2.0;
-            
-    aa = [a2,a1,a0]/a2;
-    bb = [b2,b1,b0]/a2;
+    F_Fl_HPF    = Af_HPF(R.F_FlCornerFreq(1)/50,1,simu.dt,1);
     
     figure(900)
     set(gcf,'Name','Fl Filts');
-    bode(F_Fl_LPF,tf(bb,aa,simu.dt))
+    bodemag(F_Fl_LPF*F_Fl_HPF)
+    
+    ylim([-50,2]);
 
             
 end
@@ -168,6 +153,8 @@ F.F_PS.a            = F_PS.den{1};
 F.F_PS.b            = F_PS.num{1};
 
 if 1
+    
+    
     figure(1000);
     set(gcf,'Name','MP Table');
     
@@ -180,74 +167,4 @@ if 1
     
 end
 
-
-
-%% Find plant parameters
-
-cpscan = Cx;
-[Avec,Bbvec,GS,Beta_op,vv] = Pre_TSRtracking_GS(ContParam,cpscan);
-ContParam.GS = GS;
-
-% Trim for BldPitch Controller
-Bopind = find(Beta_op>0);
-Avec_BPC = Avec(Bopind(1):end);
-Bbvec_BPC = Bbvec(Bopind(1):end);
-Betaop_BPC = Beta_op(Bopind(1):end);
-vv_bpc = vv(Bopind(1):end);
-
-
-
-%% Load Outlist
-% OutName = 'DTU_10MW_OO_GoM.SFunc.out';
-% SFunc_OutfileName = [ModDir filesep OutName];
-
-
-% OutList = Post_LoadOutlist(SFunc_OutfileName); 
-% %% Run Simulation
-% % % TSR_opt = TSRvec(Cpvec == max(Cpvec));
-% sim('TSR_Tracking_v2.mdl',[0,TMax]);
-% 
-% for i = 1:length(OutList)
-%     try
-%         simout.(OutList{i}) = FAST_Out.Data(:,i);
-%     catch
-%         warning(['Outlist Parameter ' OutList{i} ' was not loaded from the fast.out file.'])
-%     end
-% end
-% simout.VSparams_a = VS_params.signals.values(:,1);
-% simout.VSparams_rotspeederr = VS_params.signals.values(:,2);
-% simout.VSparams_Ki = VS_params.signals.values(:,3);
-% simout.VSparams_Kp = VS_params.signals.values(:,4);
-% simout.TSR = simout.RotSpeed./simout.Wind1VelX * ContParam.RotorRad * pi/30;
-% simout.VSparams_omopt = Om_opt.Data;
-% 
-% simout.PCparams_a = PC_params.signals.values(:,1);
-% simout.PCparams_rotspeederr = PC_params.signals.values(:,2);
-% simout.PCparams_Ki = PC_params.signals.values(:,3);
-% simout.PCparams_Kp = PC_params.signals.values(:,4);
-% simout.PCparams_B_ss = PC_params.signals.values(:,5);
-% 
-% simout.ContParam = ContParam;
-%% Plots, if you want them
-% Pl_FastPlots(simout);
-
-% % Setpoint smoothing
-% delplots = 1;
-% if delplots
-%     figure(1)
-%     myplot(DelOmega); hold on
-%     title('DelOmega')
-%     figure(2)
-%     myplot(Omega_tg_ref); hold on
-%     title('Torque Reference')
-%     figure(3)
-%     myplot(Omega_bg_ref); hold on
-%     title('BldPitch Reference')
-% end
-% 
-% figure
-% myplot(Omega_tg_ref); hold on
-% myplot(Omega_bg_ref);
-% myplot(simout.Time, simout.GenSpeed*pi/30);
-% legend('Torque Ref','BldPitch Ref', 'GenSpeed')
 

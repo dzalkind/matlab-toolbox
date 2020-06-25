@@ -69,7 +69,7 @@ end
 % Control Parameters
 [~,SD_dllFile]          = GetFASTPar_Subfile(SvDP,'DLL_InFile',fast.FAST_directory, fast.FAST_directory);
 SD_dllP                 = ROSCO2Matlab(SD_dllFile,2);
-SvDP                    = SetFASTPar(SvDP,'DLL_InFile',[fast.FAST_namingOut,'_DISCON.IN']);
+SvDP                    = SetFASTPar(SvDP,'DLL_InFile',['"',fast.FAST_runDirectory,filesep,fast.FAST_namingOut,'_DISCON.IN"']);
 
 % CpCtCqFile              = GetFASTPar(SD_dllP,'!PerfFileName');
 % Hard code since this fa
