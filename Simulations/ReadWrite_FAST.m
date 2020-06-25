@@ -58,12 +58,11 @@ if copyAirfoils
     if ~exist(fullfile(fast.FAST_runDirectory,'Airfoils'))
         mkdir(fullfile(fast.FAST_runDirectory,'Airfoils'))
     end
-    for iFile = 1:length(ADP.FoilNm)
-        copyfile(fullfile(fast.FAST_directory,ADP.FoilNm{iFile}(2:end-1)),fullfile(fast.FAST_runDirectory,ADP.FoilNm{iFile}(2:end-1)));
-        AFP   = FAST2Matlab(ADP.FoilNm{iFile}(2:end-1),2);
-        AFCoords = GetFASTPar(AFP,'NumCoords');
-        copyfile(fullfile(fast.FAST_directory,'Airfoils',AFCoords(3:end-1)),fullfile(fast.FAST_runDirectory,'Airfoils',AFCoords(3:end-1)));
-    end
+    
+    disp('Copying airfoils')
+    system(['cp -R ',fullfile(fast.FAST_directory,'Airfoils'),' ',fullfile(fast.FAST_runDirectory,'Airfoils')]);
+    disp('Finished copying')
+    
 end
 
 % Control Parameters

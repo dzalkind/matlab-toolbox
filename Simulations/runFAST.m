@@ -19,7 +19,7 @@ switch simu.Configuration
         fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData';
         
         % Simulation Parameters
-        simu.Use_Simulink       = 0;
+        simu.Use_Simulink       = 1;
         simu.SimModel           = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SimulinkModels/ROSCO';
         simu.ParamScript        = '/Users/dzalkind/Tools/matlab-tools/Simulations/SimulinkModels/load_ROSCO_params';
         simu.DebugSim           = 1;  % use when running/testing/editing main file
