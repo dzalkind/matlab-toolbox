@@ -1,3 +1,4 @@
+function [R,F,Cx] = load_ROSCO_params(fast,P,simu)
 %% Load ROSCO Controller Parameters
 % This script is required to load ROSCO control parameters into workspace
 % Uses *.IN file parameters as input via P.SD_dllP  (ServoDyn Dll params)
@@ -16,6 +17,14 @@ R.GBRatio = GetFASTPar(P.EDP,'GBRatio');        % Gearbox ratio
 
 R.GenEff    = GetFASTPar(P.SvDP,'GenEff')/100;
 
+
+%% Pitch Actuator Parameters
+% No input yet, define here
+
+R.PitchActBW    = 0.25* 2 * pi;   % rad/s
+F_PitchAct      = Af_LPF(R.PitchActBW,0.707,simu.dt);
+F.F_PitchAct.b  = F_PitchAct.num{1};
+F.F_PitchAct.a  = F_PitchAct.den{1};
 
 %% Torque Control Parameters
 
@@ -64,8 +73,8 @@ F.F_SS.b        = F_SS.num{1};
 F.F_SS.a        = F_SS.den{1};
 
 F_Wind          = Af_LPF(0.0333,1,simu.dt,1);
-Filt.Wind.b     = F_Wind.num{1};
-Filt.Wind.a     = F_Wind.den{1};
+F.Wind.b     = F_Wind.num{1};
+F.Wind.a     = F_Wind.den{1};
 
 
 %% Wind Speed Estimator Parameters
@@ -85,7 +94,7 @@ R.WE_FOPoles_v      = GetFASTPar(P.SD_dllP,'WE_FOPoles_v');
 R.WE_FOPoles        = GetFASTPar(P.SD_dllP,'WE_FOPoles');
 
 % Cp Surface
-Cx                  = Pre_LoadRotPerf(fullfile(fast.FAST_runDirectory,F.Out.Cx));
+Cx                  = Pre_LoadRotPerf(R.PerfFileName(2:end-1));
 
 % Initial condition
 R.WE_v0             = 12;

@@ -1,6 +1,10 @@
 %% post_SetPlotChannels
 if exist('P','var')
-    PP.TimePlot.Xlim        =   [20,GetFASTPar(P.FP,'TMax')];
+    Param = P;
+end
+
+if exist('Param','var')
+    PP.TimePlot.Xlim        =   [20,GetFASTPar(Param.FP,'TMax')];
 else
     PP.TimePlot.Xlim        =   [20,100];
 end
@@ -183,6 +187,11 @@ PP.Channels{iChan}          =   {
 %     {'RootMxc0',        []}
 %     }; iChan=iChan+1;
 % 
+
+PP.Channels{iChan}          =   {
+    {'PtfmRVyt',           []}
+    }; iChan=iChan+1;
+
 PP.Channels{iChan}          =   {
     {'PtfmHeave',           []}
     {'PtfmPitch',           []}

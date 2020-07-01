@@ -25,8 +25,20 @@ if ~exist('sigsOut','var')
     sigsOut = [];
 end
 
+if ~exist('Dist','var')
+    Dist = [];
+end
+
+if ~exist('Param','var')
+    if exist('P','var')
+        Param = P;
+    else
+        Param = [];
+    end
+end
+
 save(fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'.mat']),...
-    'P','R','F','post','Chan','OutData','OutList','fast','sigsOut','Signals');
+    'Param','Dist','R','F','post','Chan','OutData','OutList','fast','sigsOut','Signals');
 
     
 %         save(fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'.mat']),...

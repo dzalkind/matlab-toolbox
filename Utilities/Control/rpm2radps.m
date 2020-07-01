@@ -1,2 +1,2 @@
-edfunction [radps] = rpm2radps(rpm)
+function [radps] = rpm2radps(rpm)
 radps = rpm*pi/30;
