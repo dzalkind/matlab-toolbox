@@ -9,7 +9,7 @@ simu.Configuration    = 1;
 
 switch simu.Configuration
     
-    case 1 
+    case 1
         % IEA 15 MW with ROSCO
         
         fast.FAST_exe          = '/Users/dzalkind/Tools/openfast/install-old/bin/openfast';
@@ -38,12 +38,53 @@ switch simu.Configuration
         simu.Use_Simulink       = 0;
 end
 
-if 0 % give a specific name
-    fast.FAST_namingOut = 'newDLL_Test';
+%% Simulation Parameters
+simu.TMax   = 600;
+
+
+%% Save Name
+% Give the input/output files a specific name or a datestring name
+
+if 1 % give a specific name
+    fast.FAST_namingOut = 'pitchAct';
 else
     % give a datestr name
     fast.FAST_namingOut = datestr(now,'mmddyy_HHMMSS');
 end
+
+
+%% Define Wind Input
+
+if 0  % Define Wind Input
+    
+    if 1  % User Defined Wind Input
+        
+        % Disturbance (D) Parameters
+        Dist.TMax            = simu.TMax;
+        Dist.U_ref           = 14;         % Steady wind speed
+        
+        Dist.Type            = 'step';
+        Dist.TStart          = 200;
+        Dist.Step            = 1;
+        
+        [windFileOut, W] = Af_MakeWind(fast,Dist,simu,1);
+        
+        edits.IW = {
+            'WindType',     2;
+            'FilenameT2',   ['"',windFileOut,'"']
+            };
+        
+    else  % point to pre-made wind input
+        
+    end
+    
+    
+    
+    
+end
+
+
+
 
 %% Edits
 % edit.<module shortcut> = {'<label>',<val>}  with a row for each edit
@@ -56,25 +97,34 @@ end
 
 
 edits.FA = {
-    'TMax',      600;
+    'TMax',      simu.TMax;
     };
 
 edits.ED = {
-%     'PtfmSgDOF',    'False';
-%     'PtfmSwDOF',     'False';
-%     'PtfmHvDOF',    'False';
-%     'PtfmRDOF',     'False';
-%     'PtfmPDOF',    'False';
-%     'PtfmYDOF',      'False';
+        
+        'FlapDOF1',    'False';
+        'FlapDOF2',    'False';
+        'EdgeDOF',    'False';
+        'TwFADOF1',    'False';
+        'TwFADOF2',    'False';
+        'TwSSDOF1',    'False';
+        'TwSSDOF2',    'False';
+        'PtfmSgDOF',    'False';
+        'PtfmSgDOF',    'False';
+        'PtfmSwDOF',     'False';
+        'PtfmHvDOF',    'False';
+        'PtfmRDOF',     'False';
+        'PtfmPDOF',    'True';
+        'PtfmYDOF',      'False';
     };
 
 edits.RO = {
-%     'SS_VSGain', 2;
+    %     'SS_VSGain', 2;
     };
 
 edits.SD = {
     
-    };
+};
 
 
 
@@ -82,7 +132,7 @@ edits.SD = {
 
 % copying the airfoils to the save directory takes a while, recommended to
 % do this the first time and not thereafter
-copyAirfoils = 1;
+copyAirfoils = 0;
 
 
 %% Simulink Setup
@@ -121,12 +171,11 @@ if ~exist(fast.FAST_runDirectory,'dir')
     mkdir(fast.FAST_runDirectory)
 end
 
-[P,F] = ReadWrite_FAST(fast,edits,copyAirfoils);
+[Param,F] = ReadWrite_FAST(fast,edits,copyAirfoils);
 
-simu.dt     = GetFASTPar(P.FP,'DT');
-simu.TMax   = GetFASTPar(P.FP,'TMax');
+simu.dt     = GetFASTPar(Param.FP,'DT');
 if simu.Use_Simulink
-    eval(ControScript);        % Run as script for meow
+    [R,F,Cx] = feval(ControScript,fast,Param,simu);        % Run as script for meow
 end
 
 
@@ -134,11 +183,11 @@ end
 
 OutList = {'Time'};
 OutList = [OutList;
-    P.IWP.OutList;
-    P.EDP.OutList;
-    P.ADP.OutList;
-    P.SvDP.OutList;
-    P.HDP.OutList;
+    Param.IWP.OutList;
+    Param.EDP.OutList;
+    Param.ADP.OutList;
+    Param.SvDP.OutList;
+    Param.HDP.OutList;
     ];
 
 for iOut = 2:length(OutList)
@@ -150,7 +199,7 @@ end
 
 % Using Simulink/S_Func
 if simu.Use_Simulink
-
+    
     
     FAST_InputFileName = [fast.FAST_runDirectory,filesep,fast.FAST_namingOut,'.fst'];
     TMax               = simu.TMax;
@@ -162,7 +211,7 @@ if simu.Use_Simulink
         SimulinkModel = [fast.FAST_runDirectory, filesep, fast.FAST_namingOut];
     end
     
-    Out         = sim(SimulinkModel, 'StopTime',num2str(GetFASTPar(P.FP,'TMax')));
+    Out         = sim(SimulinkModel, 'StopTime',num2str(GetFASTPar(Param.FP,'TMax')));
     sigsOut     = get(Out,'sigsOut');   %internal control signals
     
 else  % Run dll/Fast executable
@@ -183,7 +232,7 @@ end
 [OutData,OutList] = ReadFASTtext([fast.FAST_runDirectory,filesep,fast.FAST_namingOut,SFuncOutStr,'.out']);
 
 
-%% Post Process
+% Post Process
 
 post.Scripts = {
     'post_SetPlotChannels';
@@ -196,7 +245,7 @@ post.Scripts = {
 
 % Plot
 % PlotFASToutput(FASTfiles,FASTfilesDesc,ReferenceFile,Channels,ShowLegend,CustomHdr,PlotPSDs,OnePlot)
-% 
+%
 % Channels = {'Wind1VelX','GenTq','BldPitch1','GenPwr','GenSpeed','RootMyb1','TwrBsMyt','PtfmPitch'};
 % outdata = PlotFASToutput([fast.FAST_runDirectory,filesep,fast.FAST_namingOut,'.out'],{'test'},1,Channels);
 
