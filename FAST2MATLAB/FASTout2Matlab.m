@@ -12,8 +12,8 @@ POST_PROCESS = 1;
 
 %% Input Processing
 
-fast.FAST_InputFile    = 'NASA_Float';   % FAST input file (no ext)
-fast.FAST_directory    = '/Users/dzalkind/Projects/NASA/OpenFAST_Model';   % Path to fst directory files
+fast.FAST_InputFile    = 'UM_DLC0_100';   % FAST input file (no ext)
+fast.FAST_directory    = '/Users/dzalkind/Tools/WISDEM/UMaine/DLCs';   % Path to fst directory files
 
 
 %% Read
@@ -91,8 +91,11 @@ if POST_PROCESS
     
     post.Scripts = {
         'post_SetPlotChannels';
+        'Signals = ROSCOout2Matlab(fullfile(fast.FAST_directory,[fast.FAST_InputFile,''.RO.out'']));'
+        'post_GetSimSignals';
         'post_PlotChannels';
-        'post_SaveData'
+        'post_PlotSignals';
+        'post_SaveData';
         };
     
     % Plot
