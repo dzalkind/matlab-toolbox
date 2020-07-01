@@ -141,8 +141,16 @@ for iFile = 1:matData.NAzimStep
     if isfield(data(iFile), 'xdot_op')
         matData.xdop(matData.StateOrderingIndx,iFile) = cell2mat(data(iFile).xdot_op);
     end
-        
-end 
+    
+    if isfield(data(iFile), 'u_op')
+        matData.uop(:,iFile) = cell2mat(data(iFile).u_op);
+    end
+    
+    if isfield(data(iFile), 'y_op')
+        matData.yop(:,iFile) = cell2mat(data(iFile).y_op);
+    end
+    
+end
 
 
 %% Find the azimuth-averaged linearized 1st order state matrices:
