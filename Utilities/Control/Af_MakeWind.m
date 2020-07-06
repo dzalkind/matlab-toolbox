@@ -359,6 +359,9 @@ end
 
 
 %% Write Output
+if ~isdir(fast.FAST_runDirectory)
+    mkdir(fast.FAST_runDirectory);
+end
 
 windFileOut = fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'.wnd']);
 dlmwrite(windFileOut, W, 'delimiter',' ','precision',8)

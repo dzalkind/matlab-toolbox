@@ -50,7 +50,7 @@ PotFile                 = GetFASTPar(HDP,'PotFile');
 if ~exist(fullfile(fast.FAST_runDirectory,'HydroData'),'dir')
     mkdir(fullfile(fast.FAST_runDirectory,'HydroData'))
 end
-copyfile(fullfile([PotFile(2:end-1),'*']),fullfile(fast.FAST_runDirectory,'HydroData'));
+copyfile(fullfile(fast.FAST_directory,[PotFile(2:end-1),'*']),fullfile(fast.FAST_runDirectory,'HydroData'));
 HDP                     = SetFASTPar(HDP,'PotFile',PotFile);
 
 % Airfoils
@@ -60,7 +60,7 @@ if copyAirfoils
     end
     
     disp('Copying airfoils')
-    system(['cp -R ',fullfile(fast.FAST_directory,'Airfoils'),' ',fullfile(fast.FAST_runDirectory,'Airfoils')]);
+    system(['cp -R ',fullfile(fast.FAST_directory,'Airfoils'),' ',fullfile(fast.FAST_runDirectory)]);
     disp('Finished copying')
     
 end
@@ -72,7 +72,7 @@ SvDP                    = SetFASTPar(SvDP,'DLL_InFile',['"',fast.FAST_runDirecto
 
 % CpCtCqFile              = GetFASTPar(SD_dllP,'!PerfFileName');
 % Hard code since this fa
-copyfile(fullfile(fast.FAST_directory,SD_dllP.Val{61}(2:end-1)),fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_Cp_Ct_Cq.txt']))
+copyfile(fullfile(SD_dllP.Val{61}(2:end-1)),fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_Cp_Ct_Cq.txt']))
 SD_dllP                 = SetFASTPar(SD_dllP,'PerfFileName',['"',fast.FAST_runDirectory,filesep,fast.FAST_namingOut,'_Cp_Ct_Cq.txt"']);
 
 % MoorDyn: let's just copy for meow

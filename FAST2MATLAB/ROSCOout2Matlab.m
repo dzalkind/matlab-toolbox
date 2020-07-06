@@ -3,7 +3,7 @@ function ROSCO = ROSCOout2Matlab(FileName)
 if exist(FileName,'file')
     
     %% file read
-    [Channels, ChanName, ChanUnit] = ReadFASTtext(FileName,'\t',2);
+    [Channels, ChanName, ChanUnit] = ReadFASTtext(FileName,[],2);
     
     %% trim channel names and units, assign to struct
     

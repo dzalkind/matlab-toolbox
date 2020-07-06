@@ -4,7 +4,7 @@ if exist('P','var')
 end
 
 if exist('Param','var')
-    PP.TimePlot.Xlim        =   [20,GetFASTPar(Param.FP,'TMax')];
+    PP.TimePlot.Xlim        =   [0,GetFASTPar(Param.FP,'TMax')];
 else
     PP.TimePlot.Xlim        =   [20,100];
 end
@@ -53,7 +53,7 @@ PP.Channels{iChan}          =   {
 %     {'GenPwr',        [1e-3]}
     {'GenSpeed',        []}
 %     {'RootMyb1',        [1e-3]}
-%     {'TwrBsMyt',        [1e-3]}
+    {'TwrBsMyt',        [1e-3]}
     {'PtfmPitch',           []}
     }; iChan=iChan+1;
 
