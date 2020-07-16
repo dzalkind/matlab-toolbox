@@ -1,4 +1,4 @@
-function [P,F] = ReadWrite_FAST(fast,edits,varargin)
+function [P,F,Cx] = ReadWrite_FAST(fast,edits,varargin)
 % fast should have the following fields:
 %  .FAST_directory - where files come from
 %  .FAST_InputFile - main input file (.fst)
@@ -50,7 +50,7 @@ PotFile                 = GetFASTPar(HDP,'PotFile');
 if ~exist(fullfile(fast.FAST_runDirectory,'HydroData'),'dir')
     mkdir(fullfile(fast.FAST_runDirectory,'HydroData'))
 end
-copyfile(fullfile(fast.FAST_directory,[PotFile(2:end-1),'*']),fullfile(fast.FAST_runDirectory,'HydroData'));
+copyfile(fullfile([PotFile(2:end-1),'*']),fullfile(fast.FAST_runDirectory,'HydroData'));
 HDP                     = SetFASTPar(HDP,'PotFile',PotFile);
 
 % Airfoils
@@ -72,8 +72,12 @@ SvDP                    = SetFASTPar(SvDP,'DLL_InFile',['"',fast.FAST_runDirecto
 
 % CpCtCqFile              = GetFASTPar(SD_dllP,'!PerfFileName');
 % Hard code since this fa
-copyfile(fullfile(SD_dllP.Val{61}(2:end-1)),fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_Cp_Ct_Cq.txt']))
+copyfile(fullfile(fast.FAST_directory,SD_dllP.Val{61}(2:end-1)),fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_Cp_Ct_Cq.txt']))
 SD_dllP                 = SetFASTPar(SD_dllP,'PerfFileName',['"',fast.FAST_runDirectory,filesep,fast.FAST_namingOut,'_Cp_Ct_Cq.txt"']);
+
+% Cp Surface
+% PerfFileName            = GetFASTPar(SD_dllP,'PerfFileName');
+Cx                      = Pre_LoadRotPerf(fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_Cp_Ct_Cq.txt']));
 
 % MoorDyn: let's just copy for meow
 MDFile = GetFASTPar(FP,'MooringFile');

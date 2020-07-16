@@ -1,4 +1,4 @@
-function [R,F,Cx] = load_ROSCO_params(fast,P,simu)
+function [R,F] = load_ROSCO_params(P,simu)
 %% Load ROSCO Controller Parameters
 % This script is required to load ROSCO control parameters into workspace
 % Uses *.IN file parameters as input via P.SD_dllP  (ServoDyn Dll params)
@@ -55,6 +55,7 @@ R.PC_MaxPit     = GetFASTPar(P.SD_dllP,'PC_MaxPit');
 R.PC_MinPit     = GetFASTPar(P.SD_dllP,'PC_MinPit');
 R.PC_MaxRat     = GetFASTPar(P.SD_dllP,'PC_MaxPit');
 
+% keyboard;
 
 %% Setpoint Smoothing Control Parameters
 
@@ -63,8 +64,14 @@ R.SS_PCGain     = GetFASTPar(P.SD_dllP,'SS_PCGain');
 
 %% Filter Parameters
 
+R.F_LPFType         = GetFASTPar(P.SD_dllP,'F_LPFType');
+R.F_LPFCornerFreq   = GetFASTPar(P.SD_dllP,'F_LPFCornerFreq');
 
-F_HSS           = Af_LPF(GetFASTPar(P.SD_dllP,'F_LPFCornerFreq'),GetFASTPar(P.SD_dllP,'F_LPFDamping'),simu.dt);
+if R.F_LPFType == 2
+    F_HSS           = Af_LPF(R.F_LPFCornerFreq,GetFASTPar(P.SD_dllP,'F_LPFDamping'),simu.dt);
+else
+    F_HSS           = Af_LPF(R.F_LPFCornerFreq,GetFASTPar(P.SD_dllP,'F_LPFDamping'),simu.dt,1);
+end
 F.HSS.b         = F_HSS.num{1};
 F.HSS.a         = F_HSS.den{1};
 
@@ -72,13 +79,15 @@ F_SS            = Af_LPF(GetFASTPar(P.SD_dllP,'F_SSCornerFreq'),1,simu.dt,1);
 F.F_SS.b        = F_SS.num{1};
 F.F_SS.a        = F_SS.den{1};
 
-F_Wind          = Af_LPF(0.0333,1,simu.dt,1);
+F_Wind          = Af_LPF(0.20944,1,simu.dt,1);
 F.Wind.b     = F_Wind.num{1};
 F.Wind.a     = F_Wind.den{1};
 
 
 %% Wind Speed Estimator Parameters
 % Only the EKF is implemented, for meow
+
+R.WE_Mode           = GetFASTPar(P.SD_dllP,'WE_Mode');
 
 R.WE_BladeRadius    = GetFASTPar(P.SD_dllP,'WE_BladeRadius');
 R.WE_CP_n           = GetFASTPar(P.SD_dllP,'WE_CP_n');
@@ -87,19 +96,27 @@ R.WE_Gamma          = GetFASTPar(P.SD_dllP,'WE_Gamma');
 R.WE_GearboxRatio   = GetFASTPar(P.SD_dllP,'WE_GearboxRatio');
 R.WE_Jtot           = GetFASTPar(P.SD_dllP,'WE_Jtot');
 R.WE_RhoAir         = GetFASTPar(P.SD_dllP,'WE_RhoAir');
-R.PerfFileName      = GetFASTPar(P.SD_dllP,'PerfFileName');
 R.PerfTableSize     = GetFASTPar(P.SD_dllP,'PerfTableSize');
 R.WE_FOPoles_N      = GetFASTPar(P.SD_dllP,'WE_FOPoles_N');
 R.WE_FOPoles_v      = GetFASTPar(P.SD_dllP,'WE_FOPoles_v');
 R.WE_FOPoles        = GetFASTPar(P.SD_dllP,'WE_FOPoles');
 
-% Cp Surface
-Cx                  = Pre_LoadRotPerf(R.PerfFileName(2:end-1));
+
 
 % Initial condition
 R.WE_v0             = 12;
 R.WE_om0            = GetFASTPar(P.EDP,'RotSpeed') * R.WE_GearboxRatio;
 
+% Pitch Input
+R.NumBl              = GetFASTPar(P.EDP,'NumBl');
+F_WSEBlPitch         = Af_LPF(R.F_LPFCornerFreq/2,1,simu.dt,1);
+F.F_WSEBlPitch.b     = F_WSEBlPitch.num{1};
+F.F_WSEBlPitch.a     = F_WSEBlPitch.den{1};
+
+% Torque Input
+F_GenTq             = Af_LPF(R.F_LPFCornerFreq,0.7,simu.dt);
+F.F_GenTq.b         = F_GenTq.num{1};
+F.F_GenTq.a         = F_GenTq.den{1};
 
 %% Floating Platform Damper
 
@@ -111,6 +128,11 @@ R.F_FlCornerFreq    = GetFASTPar(P.SD_dllP,'F_FlCornerFreq');
 F_Fl_LPF            = Af_LPF(R.F_FlCornerFreq(1),R.F_FlCornerFreq(2),simu.dt) * Af_HPF(R.F_FlCornerFreq(1)/20,1,simu.dt,1);
 F.F_Fl.b            = F_Fl_LPF.num{1};
 F.F_Fl.a            = F_Fl_LPF.den{1};
+
+% High Pass Filter
+F_Fl_HPF            = Af_LPF(1/60,1,simu.dt,1);
+F.F_Fl_HPF.b        = F_Fl_HPF.num{1};
+F.F_Fl_HPF.a        = F_Fl_HPF.den{1};
 
 % Optional Notch
 F.F_NotchType       = GetFASTPar(P.SD_dllP,'F_NotchType');

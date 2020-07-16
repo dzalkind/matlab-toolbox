@@ -4,7 +4,7 @@ if exist('P','var')
 end
 
 if exist('Param','var')
-    PP.TimePlot.Xlim        =   [0,GetFASTPar(Param.FP,'TMax')];
+    PP.TimePlot.Xlim        =   [20,GetFASTPar(Param.FP,'TMax')];
 else
     PP.TimePlot.Xlim        =   [20,100];
 end
@@ -50,7 +50,7 @@ PP.Channels{iChan}          =   {
     {'Wind1VelX',        []}
     {'GenTq',        []}
     {'BldPitch1',        []}
-%     {'GenPwr',        [1e-3]}
+    {'GenPwr',        [1e-3]}
     {'GenSpeed',        []}
 %     {'RootMyb1',        [1e-3]}
     {'TwrBsMyt',        [1e-3]}
@@ -209,15 +209,23 @@ iSig = 1;
 PP.Signals{iSig}             = {
     {'WE_Vw',    [],         [],     []}
     {'om_t0',    [],         [],     []}
-    {'NacIMU_FA_AccF',    [],         [],     []}
+    {'FA_AccR',    [],         [],     []}
+    {'FA_AccF',    [],         [],     []}
     {'Fl_Pitcom',    [],         [],     []}
-    {'SS_DelOmegaF',    [],         [],     []}
+    {'SS_dOmF',    [],         [],     []}
     };iSig = iSig + 1;
 
 PP.Signals{iSig}             = {
     {'Vhatf',    [],         [],     []}
     {'PC_MinPit',    [],         [],     []}
     {'WE_Cp',    [],         [],     []}
+    };iSig = iSig + 1;
+
+PP.Signals{iSig}             = {
+    {'WE_w',    [],         [],     []}
+    {'WE_t',    [],         [],     []}
+    {'WE_b',    [],         [],     []}
+    {'WE_Vw',    [],         [],     []}
     };iSig = iSig + 1;
 
 
