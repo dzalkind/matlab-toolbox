@@ -12,8 +12,8 @@ POST_PROCESS = 1;
 
 %% Input Processing
 
-fast.FAST_InputFile    = 'RO_DLC_12';   % FAST input file (no ext)
-fast.FAST_directory    = '/Users/dzalkind/Tools/SaveData/ROSCO/Baseline/';   % Path to fst directory files
+fast.FAST_InputFile    = 'steady_0';   % FAST input file (no ext)
+fast.FAST_directory    = '/Users/dzalkind/Tools/SaveData/SweepPtfmMass/Steady/';   % Path to fst directory files
 
 
 %% Read

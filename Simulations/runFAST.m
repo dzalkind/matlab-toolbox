@@ -14,12 +14,12 @@ switch simu.Configuration
         
         fast.FAST_exe          = '/Users/dzalkind/Tools/openfast/install/bin/openfast';
         fast.FAST_SFuncDir     = '/Users/dzalkind/Tools/openfast-sim/glue-codes/simulink/src';  %%%% NEED FOR SIMULINK
-        fast.FAST_InputFile    = 'IEA-15-240-RWT-UMaineSemi.fst';   % FAST input file (ext=.fst)
-        fast.FAST_directory    = '/Users/dzalkind/Tools/IEA-15-240-RWT/OpenFAST/IEA-15-240-RWT-UMaineSemi';   % Path to fst directory files
-        fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData/StepPlay';
+        fast.FAST_InputFile    = 'UM_DLC0_016.fst';   % FAST input file (ext=.fst)
+        fast.FAST_directory    = '/Users/dzalkind/Tools/SaveData/UMaine/DLCs';   % Path to fst directory files
+        fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData/';
         
         % Simulation Parameters
-        simu.Use_Simulink       = 0;
+        simu.Use_Simulink       = 1;
         simu.SimModel           = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SimulinkModels/ROSCO';
         simu.ParamScript        = '/Users/dzalkind/Tools/matlab-tools/Simulations/SimulinkModels/load_ROSCO_params';
         simu.DebugSim           = 1;  % use when running/testing/editing main file
@@ -35,7 +35,7 @@ switch simu.Configuration
         fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData';
         
         % Simulation Parameters
-        simu.Use_Simulink       = 0;
+        simu.Use_Simulink       = 1;
         
     case 3
         % IEA 15 MW with New ROSCO
@@ -60,8 +60,8 @@ simu.TMax   = 300;
 %% Save Name
 % Give the input/output files a specific name or a datestring name
 
-if 1 % give a specific name
-    fast.FAST_namingOut = 'U14_step';
+if 0 % give a specific name
+    fast.FAST_namingOut = 'dll_ref_016_noPS_noWSE';
 else
     % give a datestr name
     fast.FAST_namingOut = datestr(now,'mmddyy_HHMMSS');
@@ -70,7 +70,7 @@ end
 
 %% Define Wind Input
 
-if 1  % Define Wind Input
+if 0  % Define Wind Input
     
     if 1  % User Defined Wind Input
         
@@ -117,28 +117,35 @@ edits.FA = {
 
 edits.ED = {
         
-        'FlapDOF1',    'False';
-        'FlapDOF2',    'False';
-        'EdgeDOF',    'False';
-        'TwFADOF1',    'False';
-        'TwFADOF2',    'False';
-        'TwSSDOF1',    'False';
-        'TwSSDOF2',    'False';
-        'PtfmSgDOF',    'False';
-        'PtfmSgDOF',    'False';
-        'PtfmSwDOF',     'False';
-        'PtfmHvDOF',    'False';
-        'PtfmRDOF',     'False';
-        'PtfmPDOF',    'True';
-        'PtfmYDOF',      'False';
+%         'FlapDOF1',    'False';
+%         'FlapDOF2',    'False';
+%         'EdgeDOF',    'False';
+%         'TwFADOF1',    'False';
+%         'TwFADOF2',    'False';
+%         'TwSSDOF1',    'False';
+%         'TwSSDOF2',    'False';
+%         'PtfmSgDOF',    'False';
+%         'PtfmSgDOF',    'False';
+%         'PtfmSwDOF',     'False';
+%         'PtfmHvDOF',    'False';
+%         'PtfmRDOF',     'False';
+%         'PtfmPDOF',    'True';
+%         'PtfmYDOF',      'False';
+% 'BlPitch(1)', 0;
+% 'BlPitch(2)', 0;
+% 'BlPitch(3)', 0;
+% 'RotSpeed',    7.55;
+
     };
 
 edits.RO = {
-    %     'SS_VSGain', 2;
+        'LoggingLevel', 2;
     };
 
 edits.SD = {
-    
+    'GenTiStr',  'False';
+        'GenTiStp',  'True';
+        'SpdGenOn',  0;
 };
 
 
@@ -147,7 +154,7 @@ edits.SD = {
 
 % copying the airfoils to the save directory takes a while, recommended to
 % do this the first time and not thereafter
-copyAirfoils = 1;
+copyAirfoils = 0;
 
 
 %% Simulink Setup
@@ -186,11 +193,11 @@ if ~exist(fast.FAST_runDirectory,'dir')
     mkdir(fast.FAST_runDirectory)
 end
 
-[Param,F] = ReadWrite_FAST(fast,edits,copyAirfoils);
+[Param,F,Cx] = ReadWrite_FAST(fast,edits,copyAirfoils);
 
 simu.dt     = GetFASTPar(Param.FP,'DT');
 if simu.Use_Simulink
-    [R,F,Cx] = feval(ControScript,fast,Param,simu);        % Run as script for meow
+    [R,F] = feval(ControScript,Param,simu);        % Run as script for meow
 end
 
 
@@ -233,7 +240,7 @@ else  % Run dll/Fast executable
     system([fast.FAST_exe, ' ', fast.FAST_runDirectory, filesep, fast.FAST_namingOut,'.fst']);
     
     % rename ROSCO debug file
-    movefile('DEBUG.dbg',fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'.RO.out']));
+%     movefile('DEBUG.dbg',fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'.RO.out']));
 end
 
 %% Get Out Data
