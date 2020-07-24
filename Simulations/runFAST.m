@@ -14,12 +14,12 @@ switch simu.Configuration
         
         fast.FAST_exe          = '/Users/dzalkind/Tools/openfast/install/bin/openfast';
         fast.FAST_SFuncDir     = '/Users/dzalkind/Tools/openfast-sim/glue-codes/simulink/src';  %%%% NEED FOR SIMULINK
-        fast.FAST_InputFile    = 'UM_DLC0_016.fst';   % FAST input file (ext=.fst)
-        fast.FAST_directory    = '/Users/dzalkind/Tools/SaveData/UMaine/DLCs';   % Path to fst directory files
+        fast.FAST_InputFile    = 'UM_DLC0_100.fst';   % FAST input file (ext=.fst)
+        fast.FAST_directory    = '/Users/dzalkind/Tools/SaveData/Float_Test';   % Path to fst directory files
         fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData/';
         
         % Simulation Parameters
-        simu.Use_Simulink       = 1;
+        simu.Use_Simulink       = 0;
         simu.SimModel           = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SimulinkModels/ROSCO';
         simu.ParamScript        = '/Users/dzalkind/Tools/matlab-tools/Simulations/SimulinkModels/load_ROSCO_params';
         simu.DebugSim           = 1;  % use when running/testing/editing main file
@@ -51,17 +51,32 @@ switch simu.Configuration
         simu.SimModel           = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SimulinkModels/ROSCO';
         simu.ParamScript        = '/Users/dzalkind/Tools/matlab-tools/Simulations/SimulinkModels/load_ROSCO_params';
         simu.DebugSim           = 1;  % use when running/testing/editing main file
+        
+    case 4
+        % IEA 15 MW with ROSCO/f/pitchActuator
+        
+        fast.FAST_exe          = '/Users/dzalkind/Tools/openfast/install/bin/openfast';
+        fast.FAST_SFuncDir     = '/Users/dzalkind/Tools/openfast-sim/glue-codes/simulink/src';  %%%% NEED FOR SIMULINK
+        fast.FAST_InputFile    = 'RO_DLC_12.fst';   % FAST input file (ext=.fst)
+        fast.FAST_directory    = '/Users/dzalkind/Tools/SaveData/ROSCO/Baseline/';   % Path to fst directory files
+        fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData';
+        
+        % Simulation Parameters
+        simu.Use_Simulink       = 0;
+        simu.SimModel           = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SimulinkModels/ROSCO';
+        simu.ParamScript        = '/Users/dzalkind/Tools/matlab-tools/Simulations/SimulinkModels/load_ROSCO_params';
+        simu.DebugSim           = 1;  % use when running/testing/editing main file
 end
 
 %% Simulation Parameters
-simu.TMax   = 300;
+simu.TMax   = 60;
 
 
 %% Save Name
 % Give the input/output files a specific name or a datestring name
 
-if 0 % give a specific name
-    fast.FAST_namingOut = 'dll_ref_016_noPS_noWSE';
+if 1 % give a specific name
+    fast.FAST_namingOut = 'dll_pitAct_100';
 else
     % give a datestr name
     fast.FAST_namingOut = datestr(now,'mmddyy_HHMMSS');

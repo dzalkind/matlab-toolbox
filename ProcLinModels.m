@@ -6,6 +6,7 @@ clear;
 %% Linear Model Options
 
 LinearPath = '/Users/dzalkind/Tools/SaveData/SweepPtfmMass/LinearPitch';
+% LinearPath = '/Users/dzalkind/Tools/SaveData/TrimTest/LinearPitch';
 
 % Perform minreal() to get rid of most hydrodynamic states that have little
 % effect
@@ -139,7 +140,7 @@ end
 
 
 % Choose Case(s) Here, reference case_matrix.yaml
-linCases = [1,5];
+linCases = [1];
 
 figure(100);
 subplot(211); hold off;
@@ -244,7 +245,7 @@ for indLin = linCases
     % Compare Nonlinear
     % Not supported for multiple model comparison
     
-    CompNL = 0;
+    CompNL = 1;
     endtime = 100;
     
     

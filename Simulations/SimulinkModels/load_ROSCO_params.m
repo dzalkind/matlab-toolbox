@@ -21,10 +21,12 @@ R.GenEff    = GetFASTPar(P.SvDP,'GenEff')/100;
 %% Pitch Actuator Parameters
 % No input yet, define here
 
-R.PitchActBW    = 0.25* 2 * pi;   % rad/s
+R.PitchActBW    = 0.25 * 2 * pi;   % rad/s
 F_PitchAct      = Af_LPF(R.PitchActBW,0.707,simu.dt);
 F.F_PitchAct.b  = F_PitchAct.num{1};
 F.F_PitchAct.a  = F_PitchAct.den{1};
+
+
 
 %% Torque Control Parameters
 
@@ -54,6 +56,8 @@ R.PC_GS_KI     = GetFASTPar(P.SD_dllP,'PC_GS_KI');
 R.PC_MaxPit     = GetFASTPar(P.SD_dllP,'PC_MaxPit');
 R.PC_MinPit     = GetFASTPar(P.SD_dllP,'PC_MinPit');
 R.PC_MaxRat     = GetFASTPar(P.SD_dllP,'PC_MaxPit');
+
+R.PC_IC         = GetFASTPar(P.EDP,'BlPitch(1)');
 
 % keyboard;
 
@@ -155,7 +159,7 @@ end
 % Gain
 R.Fl_Kp             = GetFASTPar(P.SD_dllP,'Fl_Kp');
 
-if 1
+if 0
     
     F_Fl_HPF    = Af_HPF(R.F_FlCornerFreq(1)/50,1,simu.dt,1);
     
@@ -179,11 +183,11 @@ R.PS_WindSpeeds     = GetFASTPar(P.SD_dllP,'PS_WindSpeeds');
 R.PS_BldPitchMin    = GetFASTPar(P.SD_dllP,'PS_BldPitchMin');
 
 % Filter (hard coded)
-F_PS                = Af_LPF(0.2,1,simu.dt,1);
+F_PS                = Af_LPF(0.21,1,simu.dt,1);
 F.F_PS.a            = F_PS.den{1};
 F.F_PS.b            = F_PS.num{1};
 
-if 1
+if 0
     
     
     figure(1000);

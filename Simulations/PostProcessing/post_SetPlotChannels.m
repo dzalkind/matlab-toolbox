@@ -6,7 +6,7 @@ end
 if exist('Param','var')
     PP.TimePlot.Xlim        =   [20,GetFASTPar(Param.FP,'TMax')];
 else
-    PP.TimePlot.Xlim        =   [20,100];
+    PP.TimePlot.Xlim        =   [20,2000];
 end
 PP.TimePlot.hold        =   1;
 
@@ -226,6 +226,7 @@ PP.Signals{iSig}             = {
     {'WE_t',    [],         [],     []}
     {'WE_b',    [],         [],     []}
     {'WE_Vw',    [],         [],     []}
+    {'WE_D',    [],         [],     []}
     };iSig = iSig + 1;
 
 

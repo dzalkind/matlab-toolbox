@@ -70,14 +70,13 @@ end
 SD_dllP                 = ROSCO2Matlab(SD_dllFile,2);
 SvDP                    = SetFASTPar(SvDP,'DLL_InFile',['"',fast.FAST_runDirectory,filesep,fast.FAST_namingOut,'_DISCON.IN"']);
 
-% CpCtCqFile              = GetFASTPar(SD_dllP,'!PerfFileName');
-% Hard code since this fa
-copyfile(fullfile(fast.FAST_directory,SD_dllP.Val{61}(2:end-1)),fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_Cp_Ct_Cq.txt']))
+% Cx Surface
+PerfFileName            = GetFASTPar(SD_dllP,'PerfFileName');
+[~,n,e]                 = fileparts(PerfFileName(2:end-1));
+copyfile(fullfile(fast.FAST_directory,[n,e]),fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_Cp_Ct_Cq.txt']))
 SD_dllP                 = SetFASTPar(SD_dllP,'PerfFileName',['"',fast.FAST_runDirectory,filesep,fast.FAST_namingOut,'_Cp_Ct_Cq.txt"']);
 
-% Cp Surface
-% PerfFileName            = GetFASTPar(SD_dllP,'PerfFileName');
-Cx                      = Pre_LoadRotPerf(fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_Cp_Ct_Cq.txt']));
+Cx                      = Pre_LoadRotPerf(fullfile(fast.FAST_directory,[n,e]));
 
 % MoorDyn: let's just copy for meow
 MDFile = GetFASTPar(FP,'MooringFile');
