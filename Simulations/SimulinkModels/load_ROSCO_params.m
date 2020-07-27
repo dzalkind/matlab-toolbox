@@ -203,3 +203,30 @@ if 0
 end
 
 
+%% Power Control
+
+ 
+R.PC_PwrRating      = GetFASTPar(P.SD_dllP,'PC_PwrRating');
+R.PC_BldPitchMin    = GetFASTPar(P.SD_dllP,'PC_BldPitchMin');
+
+
+if 1
+    figure(1001)
+    set(gcf,'Name','PC Table');
+    
+    plot(R.PC_PwrRating, R.PC_BldPitchMin)
+    
+end
+
+
+%% Open Loop Power Control
+
+R.PwC_t     = [0,50];
+R.PwC_R     = [0.7,1];
+
+% append last time
+R.PwC_t     = [R.PwC_t,simu.TMax];
+R.PwC_R     = [R.PwC_R,R.PwC_R(end)];
+
+
+

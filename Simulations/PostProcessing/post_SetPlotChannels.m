@@ -218,6 +218,7 @@ PP.Signals{iSig}             = {
 PP.Signals{iSig}             = {
     {'Vhatf',    [],         [],     []}
     {'PC_MinPit',    [],         [],     []}
+    {'APC_Pit',    [],         [],     []}
     {'WE_Cp',    [],         [],     []}
     };iSig = iSig + 1;
 

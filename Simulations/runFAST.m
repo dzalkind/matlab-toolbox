@@ -4,7 +4,7 @@
 
 clear;
 
-simu.Configuration    = 1;
+simu.Configuration    = 5;
 
 
 switch simu.Configuration
@@ -66,16 +66,46 @@ switch simu.Configuration
         simu.SimModel           = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SimulinkModels/ROSCO';
         simu.ParamScript        = '/Users/dzalkind/Tools/matlab-tools/Simulations/SimulinkModels/load_ROSCO_params';
         simu.DebugSim           = 1;  % use when running/testing/editing main file
+        
+    case 5
+        % IEA 15 MW with APC
+        
+        fast.FAST_exe          = '/Users/dzalkind/Tools/openfast/install/bin/openfast';
+        fast.FAST_SFuncDir     = '/Users/dzalkind/Tools/openfast-sim/glue-codes/simulink/src';  %%%% NEED FOR SIMULINK
+        fast.FAST_InputFile    = 'UM_DLC0_100.fst';   % FAST input file (ext=.fst)
+        fast.FAST_directory    = '/Users/dzalkind/Tools/SaveData/Testing/PowerControl';   % Path to fst directory files
+        fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData';
+        
+        % Simulation Parameters
+        simu.Use_Simulink       = 1;
+        simu.SimModel           = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SimulinkModels/ROSCO';
+        simu.ParamScript        = '/Users/dzalkind/Tools/matlab-tools/Simulations/SimulinkModels/load_ROSCO_params';
+        simu.DebugSim           = 1;  % use when running/testing/editing main file
+        
+    case 10
+        % SUMR-D initial
+        
+        fast.FAST_exe          = '/Users/dzalkind/Tools/openfast/install/bin/openfast';
+        fast.FAST_SFuncDir     = '/Users/dzalkind/Tools/openfast-sim/glue-codes/simulink/src';  %%%% NEED FOR SIMULINK
+        fast.FAST_InputFile    = 'SUMR-D_FA.fst';   % FAST input file (ext=.fst)
+        fast.FAST_directory    = '/Users/dzalkind/Tools/SUMR-D/FAST8_IF';   % Path to fst directory files
+        fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData/SUMR-D';
+        
+        % Simulation Parameters
+        simu.Use_Simulink       = 1;
+        simu.SimModel           = '/Users/dzalkind/Tools/SUMR-D/CART_Controller.slx';
+        simu.ParamScript        = '/Users/dzalkind/Tools/SUMR-D/C_AD_SUMR_D.m';
+        simu.DebugSim           = 1;  % use when running/testing/editing main file
 end
 
 %% Simulation Parameters
-simu.TMax   = 60;
+simu.TMax   = 100;
 
 
 %% Save Name
 % Give the input/output files a specific name or a datestring name
 
-if 1 % give a specific name
+if 0 % give a specific name
     fast.FAST_namingOut = 'dll_pitAct_100';
 else
     % give a datestr name
