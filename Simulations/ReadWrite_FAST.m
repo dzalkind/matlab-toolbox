@@ -86,7 +86,7 @@ Cx                      = Pre_LoadRotPerf(fullfile(fast.FAST_directory,[n,e]));
 if GetFASTPar(FP,'CompMooring')
     MDFile = GetFASTPar(FP,'MooringFile');
     copyfile(fullfile(fast.FAST_directory,MDFile(2:end-1)),fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_MoorDyn.dat']))
-    esle
+else
     MDFile = [];
 end
 %% Edits

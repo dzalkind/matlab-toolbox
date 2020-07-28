@@ -4,7 +4,7 @@
 
 clear;
 
-simu.Configuration    = 10;
+simu.Configuration    = 1;
 
 
 switch simu.Configuration
@@ -14,7 +14,7 @@ switch simu.Configuration
         
         fast.FAST_exe          = '/Users/dzalkind/Tools/openfast/install/bin/openfast';
         fast.FAST_SFuncDir     = '/Users/dzalkind/Tools/openfast-sim/glue-codes/simulink/src';  %%%% NEED FOR SIMULINK
-        fast.FAST_InputFile    = 'UM_DLC0_100.fst';   % FAST input file (ext=.fst)
+        fast.FAST_InputFile    = 'UM_DLC0_040.fst';   % FAST input file (ext=.fst)
         fast.FAST_directory    = '/Users/dzalkind/Tools/SaveData/Float_Test';   % Path to fst directory files
         fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData/';
         
@@ -99,7 +99,7 @@ switch simu.Configuration
 end
 
 %% Simulation Parameters
-simu.TMax   = 100;
+simu.TMax   = 600;
 
 
 %% Save Name
@@ -199,7 +199,7 @@ edits.SD = {
 
 % copying the airfoils to the save directory takes a while, recommended to
 % do this the first time and not thereafter
-copyAirfoils = 1;
+copyAirfoils = 0;
 
 
 %% Simulink Setup

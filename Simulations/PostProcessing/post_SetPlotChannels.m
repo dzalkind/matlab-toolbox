@@ -190,6 +190,7 @@ PP.Channels{iChan}          =   {
 
 PP.Channels{iChan}          =   {
     {'PtfmRVyt',           []}
+    {'RtVAvgxh',           []}
     }; iChan=iChan+1;
 
 PP.Channels{iChan}          =   {
