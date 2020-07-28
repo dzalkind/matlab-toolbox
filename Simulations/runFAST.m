@@ -4,7 +4,7 @@
 
 clear;
 
-simu.Configuration    = 5;
+simu.Configuration    = 10;
 
 
 switch simu.Configuration
@@ -93,7 +93,7 @@ switch simu.Configuration
         
         % Simulation Parameters
         simu.Use_Simulink       = 1;
-        simu.SimModel           = '/Users/dzalkind/Tools/SUMR-D/CART_Controller.slx';
+        simu.SimModel           = '/Users/dzalkind/Tools/SUMR-D/CART_Controller';
         simu.ParamScript        = '/Users/dzalkind/Tools/SUMR-D/C_AD_SUMR_D.m';
         simu.DebugSim           = 1;  % use when running/testing/editing main file
 end
@@ -199,13 +199,13 @@ edits.SD = {
 
 % copying the airfoils to the save directory takes a while, recommended to
 % do this the first time and not thereafter
-copyAirfoils = 0;
+copyAirfoils = 1;
 
 
 %% Simulink Setup
 
 if simu.Use_Simulink
-    [ControlScriptPath,ControScript] = fileparts(simu.ParamScript);
+    [ControlScriptPath,ControlScript] = fileparts(simu.ParamScript);
     addpath(ControlScriptPath);
     
     % append edits.SD
@@ -226,7 +226,12 @@ if simu.Use_Simulink
     addpath(fast.FAST_SFuncDir);
     
     % copy simulink file being run
-    copyfile([simu.SimModel,'.mdl'],[fast.FAST_runDirectory, filesep, fast.FAST_namingOut, '.mdl']);
+    models_in_dir       = dir([simu.SimModel,'*']);
+    [~,~,model_ext]     = fileparts(models_in_dir(1).name);
+    if ~exist(fast.FAST_runDirectory)
+        mkdir(fast.FAST_runDirectory)
+    end
+    copyfile([simu.SimModel,model_ext],[fast.FAST_runDirectory, filesep, fast.FAST_namingOut, model_ext]);
     
 end
 
@@ -242,11 +247,23 @@ end
 
 simu.dt     = GetFASTPar(Param.FP,'DT');
 if simu.Use_Simulink
-    [R,F] = feval(ControScript,Param,simu);        % Run as script for meow
+    try  % to run as function
+        [R,F] = feval(ControlScript,Param,simu);        % Run as script for meow
+    catch
+        eval(ControlScript);
+    end
 end
 
 
 %% Premake OutList for Simulink
+
+if GetFASTPar(Param.FP,'CompAero') == 1
+    Param.ADP.OutList = {};
+end
+
+if ~GetFASTPar(Param.FP,'CompHydro')
+    Param.HDP.OutList = {};
+end
 
 OutList = {'Time'};
 OutList = [OutList;

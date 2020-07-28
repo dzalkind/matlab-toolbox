@@ -22,6 +22,7 @@ FP = FAST2Matlab(fullfile(fast.FAST_directory,fast.FAST_InputFile),2); %FP are F
 [IWP, IWFile]   = GetFASTPar_Subfile(FP, 'InflowFile', fast.FAST_directory, fast.FAST_directory);
 [ADP, ADFile]   = GetFASTPar_Subfile(FP, 'AeroFile', fast.FAST_directory, fast.FAST_directory);
 [SvDP, SvDFile] = GetFASTPar_Subfile(FP, 'ServoFile', fast.FAST_directory, fast.FAST_directory);
+
 [HDP, HDFile]   = GetFASTPar_Subfile(FP, 'HydroFile', fast.FAST_directory, fast.FAST_directory,true);
 % [SbDP, SbDFile] = GetFASTPar_Subfile(FP, 'SubFile', fast.FAST_directory, fast.FAST_directory);
 % [MDP, MDFile]   = GetFASTPar_Subfile(FP, 'MooringFile', fast.FAST_directory, fast.FAST_directory);
@@ -50,8 +51,11 @@ PotFile                 = GetFASTPar(HDP,'PotFile');
 if ~exist(fullfile(fast.FAST_runDirectory,'HydroData'),'dir')
     mkdir(fullfile(fast.FAST_runDirectory,'HydroData'))
 end
-copyfile(fullfile([PotFile(2:end-1),'*']),fullfile(fast.FAST_runDirectory,'HydroData'));
-HDP                     = SetFASTPar(HDP,'PotFile',PotFile);
+
+if ~isempty(PotFile)
+    copyfile(fullfile([PotFile(2:end-1),'*']),fullfile(fast.FAST_runDirectory,'HydroData'));
+    HDP                     = SetFASTPar(HDP,'PotFile',PotFile);
+end
 
 % Airfoils
 if copyAirfoils
@@ -79,9 +83,12 @@ SD_dllP                 = SetFASTPar(SD_dllP,'PerfFileName',['"',fast.FAST_runDi
 Cx                      = Pre_LoadRotPerf(fullfile(fast.FAST_directory,[n,e]));
 
 % MoorDyn: let's just copy for meow
-MDFile = GetFASTPar(FP,'MooringFile');
-copyfile(fullfile(fast.FAST_directory,MDFile(2:end-1)),fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_MoorDyn.dat']))
-
+if GetFASTPar(FP,'CompMooring')
+    MDFile = GetFASTPar(FP,'MooringFile');
+    copyfile(fullfile(fast.FAST_directory,MDFile(2:end-1)),fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_MoorDyn.dat']))
+    esle
+    MDFile = [];
+end
 %% Edits
 
 % Set new input files
@@ -146,7 +153,9 @@ Matlab2FAST(FP,fullfile(fast.FAST_directory,fast.FAST_InputFile),fullfile(fast.F
 Matlab2FAST(EDP,EDFile,  fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_ElastoDyn.dat']), 2); %contains 2 header lines
 Matlab2FAST(IWP,IWFile,  fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_InflowFile.dat']), 2); %contains 2 header lines
 Matlab2FAST(ADP,ADFile,  fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_AeroDyn15.dat']), 2); %contains 2 header lines
-Matlab2HD(HDP,HDFile,  fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_HydroDyn.dat']), 2); %contains 2 header lines
+if GetFASTPar(FP,'CompHydro')
+    Matlab2HD(HDP,HDFile,  fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_HydroDyn.dat']), 2); %contains 2 header lines
+end
 Matlab2FAST(SvDP,SvDFile,  fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_ServoDyn.dat']), 2); %contains 2 header lines
 % Matlab2FAST(MDP,MDFile,  fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_MoorDyn.dat']), 2); %contains 2 header lines
 % Matlab2FAST(IDP,IDFile,  fullfile(fast.FAST_directory,[fast.FAST_namingOut,'_.dat']), 2); %contains 2 header lines
@@ -154,7 +163,9 @@ Matlab2FAST(SvDP,SvDFile,  fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,
 Matlab2FAST(ED_BldP,ED_BldFile,fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_ElastoDyn_blade.dat']), 2); %contains 2 header lines
 Matlab2FAST(ED_TwrP,ED_TwrFile,fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_ElastoDyn_tower.dat']), 2); %contains 2 header lines
 
-Matlab2FAST(AD_BldP,AD_BldFile,fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_AeroDyn15_blade.dat']), 2); %contains 2 header lines
+if GetFASTPar(FP,'CompAero') > 1
+    Matlab2FAST(AD_BldP,AD_BldFile,fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_AeroDyn15_blade.dat']), 2); %contains 2 header lines
+end
 Matlab2ROSCO(SD_dllP,SD_dllFile,fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_DISCON.IN']), 2); %contains 2 header lines
 
 
