@@ -77,10 +77,14 @@ SvDP                    = SetFASTPar(SvDP,'DLL_InFile',['"',fast.FAST_runDirecto
 % Cx Surface
 PerfFileName            = GetFASTPar(SD_dllP,'PerfFileName');
 [~,n,e]                 = fileparts(PerfFileName(2:end-1));
-copyfile(fullfile(fast.FAST_directory,[n,e]),fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_Cp_Ct_Cq.txt']))
+try
+    copyfile(fullfile(fast.FAST_directory,[n,e]),fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_Cp_Ct_Cq.txt']))
+catch
+    copyfile(PerfFileName(2:end-1),fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_Cp_Ct_Cq.txt']))
+end
 SD_dllP                 = SetFASTPar(SD_dllP,'PerfFileName',['"',fast.FAST_runDirectory,filesep,fast.FAST_namingOut,'_Cp_Ct_Cq.txt"']);
 
-Cx                      = Pre_LoadRotPerf(fullfile(fast.FAST_directory,[n,e]));
+Cx                      = Pre_LoadRotPerf(fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'_Cp_Ct_Cq.txt']));
 
 % MoorDyn: let's just copy for meow
 if GetFASTPar(FP,'CompMooring')

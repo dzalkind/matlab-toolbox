@@ -4,7 +4,7 @@
 
 clear;
 
-simu.Configuration    = 1;
+simu.Configuration    = 10;
 
 
 switch simu.Configuration
@@ -85,14 +85,14 @@ switch simu.Configuration
     case 10
         % SUMR-D initial
         
-        fast.FAST_exe          = '/Users/dzalkind/Tools/openfast/install/bin/openfast';
+        fast.FAST_exe          = '/Users/dzalkind/Tools/openfast/install-old/bin/openfast';
         fast.FAST_SFuncDir     = '/Users/dzalkind/Tools/openfast-sim/glue-codes/simulink/src';  %%%% NEED FOR SIMULINK
-        fast.FAST_InputFile    = 'SUMR-D_FA.fst';   % FAST input file (ext=.fst)
-        fast.FAST_directory    = '/Users/dzalkind/Tools/SUMR-D/FAST8_IF';   % Path to fst directory files
+        fast.FAST_InputFile    = 'DLC_2.fst';   % FAST input file (ext=.fst)
+        fast.FAST_directory    = '/Users/dzalkind/Tools/SaveData/SUMR-D/USeeds';   % Path to fst directory files
         fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData/SUMR-D';
         
         % Simulation Parameters
-        simu.Use_Simulink       = 1;
+        simu.Use_Simulink       = 0;
         simu.SimModel           = '/Users/dzalkind/Tools/SUMR-D/CART_Controller';
         simu.ParamScript        = '/Users/dzalkind/Tools/SUMR-D/C_AD_SUMR_D.m';
         simu.DebugSim           = 1;  % use when running/testing/editing main file
@@ -105,8 +105,8 @@ simu.TMax   = 600;
 %% Save Name
 % Give the input/output files a specific name or a datestring name
 
-if 0 % give a specific name
-    fast.FAST_namingOut = 'dll_pitAct_100';
+if 1 % give a specific name
+    fast.FAST_namingOut = 'dlc2_dll_ref';
 else
     % give a datestr name
     fast.FAST_namingOut = datestr(now,'mmddyy_HHMMSS');
@@ -121,17 +121,23 @@ if 0  % Define Wind Input
         
         % Disturbance (D) Parameters
         Dist.TMax            = simu.TMax;
-        Dist.U_ref           = 14;         % Steady wind speed
+        Dist.U_ref           = 2;         % Steady wind speed
+        Dist.U_max           = 7;
         
-        Dist.Type            = 'step';
+        Dist.Type            = 'ramp';
         Dist.TStart          = 200;
         Dist.Step            = 1;
+        
+        Dist.Vmin            = 2;
+        Dist.Vmax            = 7;
+        
+        Dist.TEnd            = simu.TMax;
         
         [windFileOut, W] = Af_MakeWind(fast,Dist,simu,1);
         
         edits.IW = {
             'WindType',     2;
-            'Filename',   ['"',windFileOut,'"']
+            'FilenameT2',   ['"',windFileOut,'"']
             };
         
     else  % point to pre-made wind input
@@ -199,7 +205,7 @@ edits.SD = {
 
 % copying the airfoils to the save directory takes a while, recommended to
 % do this the first time and not thereafter
-copyAirfoils = 0;
+copyAirfoils = 1;
 
 
 %% Simulink Setup

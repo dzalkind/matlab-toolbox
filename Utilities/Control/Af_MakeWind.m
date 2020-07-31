@@ -66,15 +66,11 @@ if strcmp(TYPE,'step') % Single Step in Wind
     end
     
 elseif strcmp(TYPE,'ramp')  % Ramp wind going from Vmin to Vmax to min, ramp starts at Stime
-    if ~isfield(Disturbance,'Umin')
+    if ~isfield(Disturbance,'U_max')
         Disturbance.Umin = 3;
-        disp('Af_MakeWind Warning: no Vmin set for ramp wind input, setting Umin = 3 m/s');
+        disp('Af_MakeWind Warning: no U_max set for ramp wind input, setting Umin = 3 m/s');
     end
     
-    if ~isfield(Disturbance,'Umax')
-        Disturbance.Umax = 25;
-        disp('Af_MakeWind Warning: no Umax set for ramp wind input, setting Umax = 25 m/s');
-    end
     
     if ~isfield(Disturbance,'TStart')
         Disturbance.TStart = 100;
@@ -247,18 +243,21 @@ switch TYPE
         
     case 'ramp' % p1=min, p2=max, p3=ST
         
-        % ramp time
-        tt = 0:DT:Disturbance.End-Disturbance.Start;
-        rr = zeros(1,length(tt));
+        % ramp time breakpoints
+        t_ramp  = [Disturbance.TStart,  (Disturbance.TStart + Disturbance.TEnd)/2,  Disturbance.TEnd];
+        v_ramp  = [Disturbance.U_ref,   Disturbance.U_max,                          Disturbance.U_ref];
         
-        % up ramp
-        rr(1:length(tt)/2) = 2 * (Disturbance.Vmax - Disturbance.Vmin) / (Disturbance.Tend - Disturbance.Tstart) * tt(1:length(tt)/2);
+        % append start end
+        t_ramp  = [0,                   t_ramp,     Simulation.TMax];
+        v_ramp  = [Disturbance.U_ref,   v_ramp,     Disturbance.U_ref];
         
-        % down ramp
-        rr(length(tt)/2 + 1:end) = - 2 * (Disturbance.Vmax - Disturbance.Vmin) / (Disturbance.Tend - Disturbance.Tstart) * tt(length(tt)/2 + 1:end) + ...
-            2 * (Disturbance.Vmax - Disturbance.Vmin) / (Disturbance.Tend - Disturbance.Tstart) * Disturbance.Tend;
+        % catch non-unique t_ramp(s)
+        [t_ramp, iu]    = unique(t_ramp);
+        v_ramp          = v_ramp(iu);
         
-        W(W(:,1) > Disturbance.TStart:2) = rr;
+        W(:,2)  = interp1(t_ramp',v_ramp',W(:,1));
+        
+        
         
 %     case 'yaw_step' % p1:5  [ Wind Speed    Initial Yaw     Start Time      Final Yaw       End Time ]
 %         
@@ -294,7 +293,7 @@ switch TYPE
     case 'ECD'
         p1 = Disturbance.U_ref;
         p2 = Disturbance.TStart;
-        p3 = Distrubance.Tend;
+        p3 = Distrubance.TEnd;
         p4 = Disturbance.U_ref + 15;
     
         W(1:samples,2)=p1;
@@ -364,7 +363,7 @@ if ~isdir(fast.FAST_runDirectory)
 end
 
 windFileOut = fullfile(fast.FAST_runDirectory,[fast.FAST_namingOut,'.wnd']);
-dlmwrite(windFileOut, W, 'delimiter',' ','precision',8)
+dlmwrite(windFileOut, W, 'delimiter','\t','precision','%.6f')
 disp([TYPE,' Wind File Made: ',fast.FAST_namingOut,'.wnd'])
 
 if Mplot==1
