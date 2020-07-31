@@ -2,6 +2,7 @@
 % Solve linear systems generated using ProcLinModels.m
 
 clear;
+close all;
 
 %% Load Models
 
@@ -32,8 +33,8 @@ switch dist_type
         
     case 2  % turbulent input, 16 m/s
         load('/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData/072720_183300.mat')
-        NL_startTime    = 420;
-        Lin_TMax        = 69;
+        NL_startTime    = 450;
+        Lin_TMax        = 150;
         
         lin_inds        = Chan.tt >= NL_startTime & Chan.tt <= NL_startTime + Lin_TMax;
         
@@ -47,7 +48,7 @@ end
 
 %% Choose Linear Model
 
-choose_type = 1;
+choose_type = 3;
 
 switch choose_type
     
@@ -57,12 +58,15 @@ switch choose_type
         
     case 2      % based on starting wind speed of window
         [~,start_ind] = min(abs(Chan.tt - NL_startTime));
-        uh_op   = Chan.RtVAvgxh(start_ind);   
+        uh_op   = Chan.RtVAvgxh(start_ind);
         
-        u_h     = Chan.RtVAvgxh(lin_inds) - uh_op;\
+        u_h     = Chan.RtVAvgxh(lin_inds) - uh_op;
         
     case 3      % wind based on starting wind speed, sys based on avg
-        %%% TODO %%%
+        [~,start_ind] = min(abs(Chan.tt - NL_startTime));
+        uh_op   = mean(Chan.RtVAvgxh(lin_inds));
+        
+        u_h     = Chan.RtVAvgxh(lin_inds) - Chan.RtVAvgxh(start_ind);
 end
 
 % u_h_op = 14;
@@ -85,7 +89,7 @@ for iSys = 1:length(P)
     
     u_opsM(:,iSys)       = u_ops{iSys}(indInps);
     y_opsM(:,iSys)       = y_ops{iSys}(indOuts);
-%     x_opsM(:,iSys)       = x_ops{iSys};
+    %     x_opsM(:,iSys)       = x_ops{iSys};
     
     AA(:,:,iSys)    = P{iSys}.A;
     BB(:,:,iSys)    = P{iSys}.B;
@@ -115,7 +119,7 @@ u_op    = interp1(uh_ops,u_opsM',uh_op)';
 y_op    = interp1(uh_ops,y_opsM',uh_op)';
 % x_op    = interp1(uh_ops,x_opsM',uh_op)';     % skip states because not
 % reduced
-% b_op    
+% b_op
 
 
 %% Open Loop Step
@@ -141,25 +145,30 @@ yy = lsim(P_op,uu,tt);
 figure(100);
 set(gcf,'Name','Open Loop Step');
 
-subplot(311);
+subplot(511);
 plot(tt,u_lin + u_op(1));
 
-subplot(312);
+subplot(512);
 plot(tt,yy(:,1)+y_op(1)); hold on;
 ylabel('Gen Speed (rpm)');
 
-subplot(313);
+subplot(513);
 plot(tt,yy(:,2)+y_op(2)); hold on;
 ylabel('Twr Bs FA (kNm)');
+
+subplot(514);
+plot(tt,yy(:,3)+y_op(3)); hold on;
+ylabel('Ptfm Pitch (kNm)');
 
 
 %% Closed Loop Control
 
 figure(101);
-subplot(411); hold off;
-subplot(412); hold off;
-subplot(413); hold off;
-subplot(414); hold off;
+subplot(511); hold off;
+subplot(512); hold off;
+subplot(513); hold off;
+subplot(514); hold off;
+subplot(515); hold off;
 
 
 
@@ -213,21 +222,30 @@ yy = lsim(P_CL,uu(:,1),tt');
 figure(101);
 set(gcf,'Name','Closed Loop');
 
-subplot(411);
+subplot(511);
 plot(tt+NL_startTime,uu(:,1)+u_op(1)); hold on;
+plot(Chan.tt,u_op(1)*ones(size(Chan.tt)),'k--')
 ylabel('Wind Dist. (m/s)');
 
-subplot(412);
+subplot(512);
 plot(tt+NL_startTime,yy(:,1)+u_op(2)); hold on;
+plot(Chan.tt,u_op(2) * ones(size(Chan.tt)),'k--')
 ylabel('Bld Pitch (rad.)');
 
-subplot(413);
-plot(tt+NL_startTime,yy(:,2)+y_op(1)); hold on;
+subplot(513);
+h_lin   = plot(tt+NL_startTime,yy(:,2)+y_op(1)); hold on;
+h_op    = plot(Chan.tt,y_op(1) * ones(size(Chan.tt)),'k--');
 ylabel('Gen Speed (rpm)');
 
-subplot(414);
+subplot(514);
 plot(tt+NL_startTime,yy(:,3)+y_op(2)); hold on;
+plot(Chan.tt,y_op(2) * ones(size(Chan.tt)),'k--')
 ylabel('Twr Bs FA (kNm)');
+
+subplot(515);
+plot(tt+NL_startTime,yy(:,4)+y_op(3)); hold on;
+plot(Chan.tt,y_op(3) * ones(size(Chan.tt)),'k--')
+ylabel('Ptfm Pitch (deg.)');
 
 
 % Compare Nonlinear
@@ -240,47 +258,85 @@ if CompNL
     
     %% Load NL Sim & Get Initial Conditions
     
-%     phi_0   = Chan.PtfmPitch(Chan.tt == NL_startTime);
-%     
-%     om_0    = Chan.GenSpeed(Chan.tt == NL_startTime);
-%     %     dphi_0  = Chan.PtfmRVyt(Chan.tt == NL_startTime);
-%     
-%     x0 = [0;rpm2radps(om_0);deg2rad(phi_0);deg2rad(0)] - [0;rpm2radps(7.55);deg2rad(1.98);0];
-%     
-%     if 0  % use initial states
-%         BldPitch_0      = Chan.BldPitch1(Chan.tt == NL_startTime);
-%         Gen_0           = Chan.GenSpeed(Chan.tt == NL_startTime);
-%         PltPitch_0      = Chan.PtfmPitch(Chan.tt == NL_startTime);
-%         TwrBsMyt_0      = Chan.TwrBsMyt(Chan.tt == NL_startTime);
-%         
-%     else % use average states
-%         BldPitch_0      = mean(Chan.BldPitch1(lin_inds));
-%         Gen_0           = mean(Chan.GenSpeed(lin_inds));
-%         PltPitch_0      = mean(Chan.PtfmPitch(lin_inds));
-%         TwrBsMyt_0      = mean(Chan.TwrBsMyt(lin_inds));
-%     end
-%     
+    %     phi_0   = Chan.PtfmPitch(Chan.tt == NL_startTime);
+    %
+    %     om_0    = Chan.GenSpeed(Chan.tt == NL_startTime);
+    %     %     dphi_0  = Chan.PtfmRVyt(Chan.tt == NL_startTime);
+    %
+    %     x0 = [0;rpm2radps(om_0);deg2rad(phi_0);deg2rad(0)] - [0;rpm2radps(7.55);deg2rad(1.98);0];
+    %
+    %     if 0  % use initial states
+    %         BldPitch_0      = Chan.BldPitch1(Chan.tt == NL_startTime);
+    %         Gen_0           = Chan.GenSpeed(Chan.tt == NL_startTime);
+    %         PltPitch_0      = Chan.PtfmPitch(Chan.tt == NL_startTime);
+    %         TwrBsMyt_0      = Chan.TwrBsMyt(Chan.tt == NL_startTime);
+    %
+    %     else % use average states
+    %         BldPitch_0      = mean(Chan.BldPitch1(lin_inds));
+    %         Gen_0           = mean(Chan.GenSpeed(lin_inds));
+    %         PltPitch_0      = mean(Chan.PtfmPitch(lin_inds));
+    %         TwrBsMyt_0      = mean(Chan.TwrBsMyt(lin_inds));
+    %     end
+    %
     
-    t_buff = 100;
+    t_buff = -1; %100;
+    
+    if NL_startTime < t_buff
+        t_buff = NL_startTime;
+    end
     
     figure(101);
-    subplot(412);
+    subplot(511);
+    plot(Chan.tt,Chan.RtVAvgxh);
+    if t_buff > 0
+        xlim([NL_startTime-t_buff,NL_startTime+Lin_TMax+t_buff]);
+    end
+    ylabel('Rot. Avg. Wind (m/s)');
+    
+    subplot(512);
     hold on;
     plot(Chan.tt,deg2rad(Chan.BldPitch1));
     hold off;
-    xlim([NL_startTime-t_buff,NL_startTime+Lin_TMax+t_buff]);
+    if t_buff > 0
+        xlim([NL_startTime-t_buff,NL_startTime+Lin_TMax+t_buff]);
+    end
     
-    subplot(413);
+    subplot(513);
     hold on;
-    plot(Chan.tt,Chan.GenSpeed );
+    h_nl = plot(Chan.tt,Chan.GenSpeed );
     hold off;
-    xlim([NL_startTime-t_buff,NL_startTime+Lin_TMax+t_buff]);
+    if t_buff > 0
+        xlim([NL_startTime-t_buff,NL_startTime+Lin_TMax+t_buff]);
+    end
     
-    subplot(414);
+    hl = legend([h_lin,h_nl,h_op],'Linear','Nonlinear','Op. Point');
+    
+    subplot(514);
     hold on;
     plot(Chan.tt,1000* (Chan.TwrBsMyt));
     hold off;
-    xlim([NL_startTime-t_buff,NL_startTime+Lin_TMax+t_buff]);
+    if t_buff > 0
+        xlim([NL_startTime-t_buff,NL_startTime+Lin_TMax+t_buff]);
+    end
+    
+    subplot(515);
+    hold on;
+    plot(Chan.tt,(Chan.PtfmPitch));
+    hold off;
+    if t_buff > 0
+        xlim([NL_startTime-t_buff,NL_startTime+Lin_TMax+t_buff]);
+    end
     
 end
+
+
+
+%% Formatting & Printing
+
+% if 1
+%
+%
+hl.Position = [0.1721 0.5376 0.0946 0.0501];
+
+
 
