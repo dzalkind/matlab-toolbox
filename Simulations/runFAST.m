@@ -4,7 +4,7 @@
 
 clear;
 
-simu.Configuration    = 10;
+simu.Configuration    = 1;
 
 
 switch simu.Configuration
@@ -14,14 +14,14 @@ switch simu.Configuration
         
         fast.FAST_exe          = '/Users/dzalkind/Tools/openfast/install/bin/openfast';
         fast.FAST_SFuncDir     = '/Users/dzalkind/Tools/openfast-sim/glue-codes/simulink/src';  %%%% NEED FOR SIMULINK
-        fast.FAST_InputFile    = 'UM_DLC0_040.fst';   % FAST input file (ext=.fst)
+        fast.FAST_InputFile    = 'UM_DLC0_100.fst';   % FAST input file (ext=.fst)
         fast.FAST_directory    = '/Users/dzalkind/Tools/SaveData/Float_Test';   % Path to fst directory files
         fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData/';
         
         % Simulation Parameters
-        simu.Use_Simulink       = 0;
+        simu.Use_Simulink       = 1;
         simu.SimModel           = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SimulinkModels/ROSCO';
-        simu.ParamScript        = '/Users/dzalkind/Tools/matlab-tools/Simulations/SimulinkModels/load_ROSCO_params';
+        simu.ParamScript        = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SimulinkModels/load_ROSCO_params';
         simu.DebugSim           = 1;  % use when running/testing/editing main file
         
         
@@ -87,12 +87,12 @@ switch simu.Configuration
         
         fast.FAST_exe          = '/Users/dzalkind/Tools/openfast/install-old/bin/openfast';
         fast.FAST_SFuncDir     = '/Users/dzalkind/Tools/openfast-sim/glue-codes/simulink/src';  %%%% NEED FOR SIMULINK
-        fast.FAST_InputFile    = 'DLC_2.fst';   % FAST input file (ext=.fst)
-        fast.FAST_directory    = '/Users/dzalkind/Tools/SaveData/SUMR-D/USeeds';   % Path to fst directory files
+        fast.FAST_InputFile    = 'DLC_60.fst';   % FAST input file (ext=.fst)
+        fast.FAST_directory    = '/Users/dzalkind/Tools/SaveData/SUMR-D/FullDLC';   % Path to fst directory files
         fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData/SUMR-D';
         
         % Simulation Parameters
-        simu.Use_Simulink       = 0;
+        simu.Use_Simulink       = 1;
         simu.SimModel           = '/Users/dzalkind/Tools/SUMR-D/CART_Controller';
         simu.ParamScript        = '/Users/dzalkind/Tools/SUMR-D/C_AD_SUMR_D.m';
         simu.DebugSim           = 1;  % use when running/testing/editing main file
@@ -106,7 +106,7 @@ simu.TMax   = 600;
 % Give the input/output files a specific name or a datestring name
 
 if 1 % give a specific name
-    fast.FAST_namingOut = 'dlc2_dll_ref';
+    fast.FAST_namingOut = 'sim100_PwC';
 else
     % give a datestr name
     fast.FAST_namingOut = datestr(now,'mmddyy_HHMMSS');
@@ -205,7 +205,7 @@ edits.SD = {
 
 % copying the airfoils to the save directory takes a while, recommended to
 % do this the first time and not thereafter
-copyAirfoils = 1;
+copyAirfoils = 0;
 
 
 %% Simulink Setup
