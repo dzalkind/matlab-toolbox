@@ -16,7 +16,7 @@ load(fullfile(save_dir,save_name));
 %%  Define Distrubance input
 %
 
-dist_type = 2;
+dist_type = 3;
 
 switch dist_type
     
@@ -34,7 +34,7 @@ switch dist_type
     case 2  % turbulent input, 16 m/s
         load('/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData/072720_183300.mat')
         NL_startTime    = 450;
-        Lin_TMax        = 150;
+        Lin_TMax        = 100;
         
         lin_inds        = Chan.tt >= NL_startTime & Chan.tt <= NL_startTime + Lin_TMax;
         
@@ -42,13 +42,32 @@ switch dist_type
         t_d     = Chan.tt(lin_inds);
         
         
+    case 3  % filtered turbulent input, 16 m/s
+        
+        load('/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData/072720_183300.mat')
+        NL_startTime    = 450;
+        Lin_TMax        = 100;
+        
+        lin_inds        = Chan.tt >= NL_startTime & Chan.tt <= NL_startTime + Lin_TMax;
+        
+        u_h     = Chan.RtVAvgxh(lin_inds) - mean(Chan.RtVAvgxh);        % might want to filter, do we want mean over lin_inds? I don't think so
+        t_d     = Chan.tt(lin_inds);
+        
+        % filter: 2-way, tf seconds
+        t_f     = 10;
+        dt      = Chan.tt(2) - Chan.tt(1);
+        
+        nb      = floor(t_f/dt);
+        b       = ones(nb,1)/nb;
+        
+        u_h     = filtfilt(b,1,u_h);
         
 end
 
 
-%% Choose Linear Model
+% Choose Linear Model
 
-choose_type = 3;
+choose_type = 1;
 
 switch choose_type
     
@@ -82,8 +101,8 @@ y_opsM  = zeros(length(indOuts),length(P));
 
 
 for iSys = 1:length(P)
-    s               = size(P{iSys}.A);
-    nStates(iSys)   = s(1);
+    temp               = size(P{iSys}.A);
+    nStates(iSys)   = temp(1);
     
     uh_ops(iSys)     = u_ops{iSys}(indWind);
     
@@ -122,7 +141,7 @@ y_op    = interp1(uh_ops,y_opsM',uh_op)';
 % b_op
 
 
-%% Open Loop Step
+% Open Loop Step
 
 
 % Choose Case(s) Here, reference case_matrix.yaml
@@ -161,7 +180,7 @@ plot(tt,yy(:,3)+y_op(3)); hold on;
 ylabel('Ptfm Pitch (kNm)');
 
 
-%% Closed Loop Control
+% Closed Loop Control
 
 figure(101);
 subplot(511); hold off;
@@ -210,6 +229,9 @@ om_act =  1.00810; %2*pi*0.125;  %actuator bandwidth
 Act = tf(om_act^2,[1,2*.707*om_act,om_act^2]);
 Act.InputName = 'PitchCmd';
 Act.OutputName = 'BldPitch';
+
+% Connect control to check
+C_all = connect(C_PI,C_Fl,S,Act,{'GenSpeed','NacIMU'},'BldPitch');
 
 
 % Connect Everything
@@ -330,13 +352,59 @@ if CompNL
 end
 
 
+% Post Processing
+% clc
+g_max_lin = max(yy(:,2)+y_op(1));
+g_max_nlin = max(Chan.GenSpeed);
+
+p_max_lin = max(yy(:,4)+y_op(3));
+p_max_nlin = max(Chan.PtfmPitch);
+
+g_err = g_max_lin - g_max_nlin
+p_err = p_max_lin - p_max_nlin
 
 %% Formatting & Printing
 
-% if 1
-%
-%
-hl.Position = [0.1721 0.5376 0.0946 0.0501];
+if 0
+    
+    PRINT = 1;
+    
+    
+    % Format & Print Linearizations
+    
+    figure(101);
+        pause(1)
+
+    set(gcf,'WindowStyle','normal'); 
+    pause(1)
+    
+    Af_PrezFig(gcf,1,14,8);
+    pause(1)
+
+    ha = get(gcf,'Children');
+    
+    ha(2).XTickLabel = '';
+    % ha(3).XTickLabel = '';
+    ha(4).XTickLabel = '';
+    ha(5).XTickLabel = '';
+    ha(6).XTickLabel = '';
+    
+    ha(1).YLabel.String = '';
+    ha(2).YLabel.String = '';
+    ha(4).YLabel.String = '';
+    ha(5).YLabel.String = '';
+    ha(6).YLabel.String = '';
+
+    hl.Position = [0.1977 0.5219 0.1753 0.0920];
+    
+    if PRINT
+        fig_name = 'Lin_Snap';
+        export_fig(fig_name,'-png','-transparent')
+        saveFigDir = '/Users/dzalkind/Projects/WEIS/Docs/Linearization Snapshots';
+        copyfile([fig_name,'.png'],fullfile(saveFigDir,[fig_name,'.png']));
+    end
+
+end
 
 
 

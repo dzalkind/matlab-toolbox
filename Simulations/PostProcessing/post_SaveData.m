@@ -29,6 +29,10 @@ if ~exist('Dist','var')
     Dist = [];
 end
 
+if ~exist('Signals','var');
+    Signals = [];
+end
+
 if ~exist('Param','var')
     if exist('P','var')
         Param = P;

@@ -3,10 +3,10 @@ if exist('P','var')
     Param = P;
 end
 
-if exist('Param','var')
+if exist('Param','var') && ~isempty(Param)
     PP.TimePlot.Xlim        =   [20,GetFASTPar(Param.FP,'TMax')];
 else
-    PP.TimePlot.Xlim        =   [20,2000];
+    PP.TimePlot.Xlim        =   [200,600];
 end
 PP.TimePlot.hold        =   1;
 
@@ -48,13 +48,14 @@ end
 iChan = 1;
 PP.Channels{iChan}          =   {
     {'Wind1VelX',        []}
-    {'GenTq',        []}
+%     {'GenTq',        []}
     {'BldPitch1',        []}
     {'GenPwr',        [1e-3]}
-    {'GenSpeed',        []}
+%     {'GenSpeed',        []}
 %     {'RootMyb1',        [1e-3]}
-    {'TwrBsMyt',        [1e-3]}
+%     {'TwrBsMyt',        [1e-3]}
     {'PtfmPitch',           []}
+%     {'RootMyb1',           []}
     }; iChan=iChan+1;
 
 % PP.Channels{iChan}          =   {
@@ -191,6 +192,8 @@ PP.Channels{iChan}          =   {
 PP.Channels{iChan}          =   {
     {'PtfmRVyt',           []}
     {'RtVAvgxh',           []}
+    {'Wave1Elev',           []}
+    {'NcIMUTAzs',           []}
     }; iChan=iChan+1;
 
 PP.Channels{iChan}          =   {
@@ -231,7 +234,41 @@ PP.Signals{iSig}             = {
     {'WE_D',    [],         [],     []}
     };iSig = iSig + 1;
 
+PP.Signals{iSig}             = {
+    {'PwC_R',    [],         [],     []}
+    {'Om_tau',    [],         [],     []}
+    {'Om_theta',    [],         [],     []}
+    {'SS_dOmF',    [],         [],     []}
+    };iSig = iSig + 1;
+
+
+%% PSD
+
+tStart = 100;
+Duration = 600;
+iPSD = 1;
+
+PP.PSD(iPSD).Signal = 'Wave1Elev';
+PP.PSD(iPSD).Duration = 500;
+PP.PSD(iPSD).TimeWindow = [tStart,tStart+Duration];
+iPSD = iPSD + 1;
+
+PP.PSD(iPSD).Signal = 'PtfmHeave';
+PP.PSD(iPSD).Duration = 500;
+PP.PSD(iPSD).TimeWindow = [tStart,tStart+Duration];
+iPSD = iPSD + 1;
+
+PP.PSD(iPSD).Signal = 'NcIMUTAzs';
+PP.PSD(iPSD).Duration = 500;
+PP.PSD(iPSD).TimeWindow = [tStart,tStart+Duration];
+iPSD = iPSD + 1;
+
+
+PP.PSD(iPSD).Signal = 'PtfmPitch';
+PP.PSD(iPSD).Duration = 500;
+PP.PSD(iPSD).TimeWindow = [tStart,tStart+Duration];
+iPSD = iPSD + 1;
 
 %% Cleanup
 
-clearvars pp iSig iChan
+clearvars pp iSig iChan iPSD tStart Duration

@@ -12,8 +12,8 @@ POST_PROCESS = 1;
 
 %% Input Processing
 
-fast.FAST_InputFile    = 'lin_2';   % FAST input file (no ext)
-fast.FAST_directory    = '/Users/dzalkind/Tools/SaveData/TrimTest/LinearPitch';   % Path to fst directory files
+fast.FAST_InputFile    = 'TMD__100';   % FAST input file (no ext)
+fast.FAST_directory    = '/Users/dzalkind/Tools/SaveData/NASA/TMD_/';   % Path to fst directory files
 
 
 %% Read

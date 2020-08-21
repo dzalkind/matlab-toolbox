@@ -4,7 +4,7 @@
 
 clear;
 
-simu.Configuration    = 1;
+simu.Configuration    = 5;
 
 
 switch simu.Configuration
@@ -74,10 +74,10 @@ switch simu.Configuration
         fast.FAST_SFuncDir     = '/Users/dzalkind/Tools/openfast-sim/glue-codes/simulink/src';  %%%% NEED FOR SIMULINK
         fast.FAST_InputFile    = 'UM_DLC0_100.fst';   % FAST input file (ext=.fst)
         fast.FAST_directory    = '/Users/dzalkind/Tools/SaveData/Testing/PowerControl';   % Path to fst directory files
-        fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData';
+        fast.FAST_runDirectory = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData/PwC_Test';
         
         % Simulation Parameters
-        simu.Use_Simulink       = 1;
+        simu.Use_Simulink       = 0;
         simu.SimModel           = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SimulinkModels/ROSCO';
         simu.ParamScript        = '/Users/dzalkind/Tools/matlab-tools/Simulations/SimulinkModels/load_ROSCO_params';
         simu.DebugSim           = 1;  % use when running/testing/editing main file
@@ -99,14 +99,14 @@ switch simu.Configuration
 end
 
 %% Simulation Parameters
-simu.TMax   = 600;
+simu.TMax   = 150;
 
 
 %% Save Name
 % Give the input/output files a specific name or a datestring name
 
-if 1 % give a specific name
-    fast.FAST_namingOut = 'sim100_PwC';
+if 0 % give a specific name
+    fast.FAST_namingOut = 'dll100_PwC_1_1d10';
 else
     % give a datestr name
     fast.FAST_namingOut = datestr(now,'mmddyy_HHMMSS');
@@ -164,6 +164,7 @@ end
 
 edits.FA = {
     'TMax',      simu.TMax;
+%     'DT',        1/800;
     };
 
 edits.ED = {

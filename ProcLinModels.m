@@ -152,4 +152,18 @@ plot(uh_op,Gen_op);
 
 save_dir = '/Users/dzalkind/Tools/matlab-toolbox/Simulations/SaveData/LinearModels';
 
-save(fullfile(save_dir,'PitTwr'),'P','*ops','ind*','FP','*Path');
+A = cell(1,length(P));
+B = cell(1,length(P));
+C = cell(1,length(P));
+D = cell(1,length(P));
+
+
+for iSys = 1:length(P)
+    A{iSys} = P{iSys}.a;
+    B{iSys} = P{iSys}.b;
+    C{iSys} = P{iSys}.c;
+    D{iSys} = P{iSys}.d;
+end
+
+
+save(fullfile(save_dir,'PitTwr'),'P','*ops','ind*','FP','*Path','A','B','C','D');
